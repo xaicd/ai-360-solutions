@@ -294,12 +294,12 @@ export const translations = {
     mall: {
       scenarios: "应用场景",
       specifications: "方案规格 (SKU)",
-      includes: "包含服务",
-      bestSeller: "热门方案",
-      addCart: "加入项目",
-      buyNow: "立即购买",
+      includes: "交付内容",
+      bestSeller: "精选方案",
+      addCart: "纳入项目",
+      buyNow: "获取授权",
       architectVouch: "架构师验收",
-      skuPoc: "最小化试错版",
+      skuPoc: "POC 验证版",
       skuProd: "企业生产版",
       skuSaas: "云端托管版"
     },
@@ -322,9 +322,9 @@ export const translations = {
       importSolution: "导入方案",
       agentWorkshop: "数字员工工坊",
       stats: {
-        totalSolutions: "上架方案",
+        totalSolutions: "在库方案",
         activeDeployments: "活跃节点",
-        apiUsage: "神经 Token",
+        apiUsage: "调用消耗 (Tokens)",
         systemHealth: "引擎状态"
       },
       roles: {
@@ -335,24 +335,24 @@ export const translations = {
       },
       table: {
         name: "产品名称",
-        status: "市场状态",
-        score: "审计得分",
+        status: "生命周期",
+        score: "审计评分",
         actions: "操作",
         edit: "编辑方案"
       },
       editor: {
         basicInfo: "基础信息",
-        productSpecs: "产品规格 & SKU",
+        productSpecs: "配置规格",
         scenarios: "应用场景",
-        execution: "部署规格管理",
-        price: "市场价",
-        save: "保存并上架"
+        execution: "部署标准管理",
+        price: "指导价格",
+        save: "保存并发布"
       },
       audit: {
         title: "架构师工作室",
         train: "组建数字团队",
         simulate: "云仿真测试",
-        approve: "方案审核上架",
+        approve: "方案发布审核",
         trainingStatus: "正在为数字员工注入行业知识库...",
         simulatingStatus: "正在进行全环境压测仿真..."
       },
@@ -385,22 +385,22 @@ export const translations = {
     execution: {
       title: "落地执行蓝图",
       tabs: {
-        poc: "POC 阶段",
-        production: "企业生产",
+        poc: "POC 验证",
+        production: "生产环境",
         saas: "托管服务"
       },
       resources: "资源要求",
       human: "人力投入",
-      steps: "里程碑",
+      steps: "实施里程碑",
       hardware: "硬件要求",
       network: "网络环境",
       roles: "所需专家",
       hours: "预估周期"
     },
     detail: {
-      back: "返回商城",
-      deploy: "执行私有化",
-      buy: "购买授权",
+      back: "返回方案库",
+      deploy: "部署私有节点",
+      buy: "获取授权",
       source: "查看仓库",
       verticalCore: "垂直模型核心",
       baseModel: "基础模型",
@@ -434,13 +434,13 @@ export const translations = {
       teamGeneration: "正在为该方案组建专属 AI 团队...",
     },
     home: {
-      tagline: "像逛淘宝一样选购 AI 方案",
-      description: "全球首个 AI 落地商城。挑选由架构师严格验收的开源核心，选择适合您的 SKU 规格，让专业的数字团队为您保驾护航。",
-      searchPlaceholder: "搜索行业 AI 方案 (如: '医院 CRM')...",
-      searchButton: "搜索商城",
-      popular: "热门行业分类",
-      noResults: "暂无上架方案。架构师正在紧急扫货中。",
-      architectLoading: "数字架构师正在全球开源社区搜索优质方案..."
+      tagline: "企业级 AI 解决方案的一站式采购与部署平台",
+      description: "汇聚由资深架构师严格验证的行业 AI 核心，提供从 POC 到私有化部署的全链路支持。配置您的专属数字团队，让技术落地安全、可控、高效。",
+      searchPlaceholder: "搜索行业解决方案 (如: '医疗影像诊断')...",
+      searchButton: "探索方案",
+      popular: "核心行业领域",
+      noResults: "暂无匹配方案。架构团队正在持续集成新能力。",
+      architectLoading: "数字架构师正在检索全球知识库..."
     },
     results: {
       found: "件方案已上架",
