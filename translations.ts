@@ -1,0 +1,455 @@
+
+export const translations = {
+  en: {
+    title: "AI 360 Solutions",
+    subtitle: "AI in Every Industry",
+    nav: {
+      industries: "360 Industries",
+      privatization: "Privatization",
+      riskControl: "Risk Control",
+      secure: "Enterprise Secure",
+      engine: "AI Engine",
+      settings: "Settings",
+      admin: "Admin Console"
+    },
+    settings: {
+      title: "AI Engine Settings",
+      subtitle: "Configure the underlying intelligence of the AI 360 platform.",
+      save: "Save Configurations",
+      fields: {
+        apiKey: "API Key",
+        baseUrl: "Base API URL",
+        modelName: "Model Name",
+        temperature: "Temperature",
+        topP: "Top P"
+      },
+      descriptions: {
+        gemini: "Google's high-speed multimodal model.",
+        chatgpt5: "The latest reasoning powerhouse from OpenAI.",
+        grok: "Real-time internet access and raw intelligence.",
+        'claude4.5': "Safety-first enterprise reasoning model.",
+        'qwen3-plus': "Optimized for e-commerce and logistics.",
+        deepseek: "Best-in-class coding and technical math.",
+        ollama: "Local execution for maximum privacy."
+      }
+    },
+    deployment: {
+      mode: "Deployment Mode",
+      cloud: "Cloud Managed (SaaS)",
+      edge: "Edge / Private Server",
+      agentRegister: "Register Edge Agent",
+      agentKey: "Agent Auth Token",
+      tunneling: "Establishing Reverse Tunnel...",
+      encrypting: "Decrypting Secure Package (SM4)...",
+      installing: "POC Automated Deployment...",
+      status: {
+        registered: "Node Online",
+        tunnel: "Tunnel Secure",
+        packaged: "Package Verified"
+      }
+    },
+    payment: {
+      title: "Order Checkout",
+      select: "Payment Protocol",
+      wechat: "WeChat Pay",
+      alipay: "Alipay",
+      web3: "Web3 Wallet",
+      usdt: "USDT (Stablecoin)",
+      usdc: "USDC (Stablecoin)",
+      digitalRmb: "e-CNY",
+      payNow: "Execute Payment",
+      securing: "Securing Transaction...",
+      success: "Payment Verified. Access Granted.",
+      price: "License Fee",
+      walletAddr: "Network Address",
+      copy: "Copy",
+      waiting: "Waiting for blockchain confirmation..."
+    },
+    mall: {
+      scenarios: "Business Scenarios",
+      specifications: "Service Specifications (SKU)",
+      includes: "Bundle Includes",
+      bestSeller: "Market Favorite",
+      addCart: "Save to Project",
+      buyNow: "Buy License",
+      architectVouch: "Architect Audited",
+      skuPoc: "Pilot / POC",
+      skuProd: "Enterprise Prod",
+      skuSaas: "Cloud SaaS"
+    },
+    admin: {
+      loginTitle: "Architect Login",
+      loginSubtitle: "Secure access to the Solution Vetting engine.",
+      username: "Username",
+      password: "Password",
+      loginBtn: "Authorize Access",
+      demoAdmin: "Super Admin",
+      demoArchitect: "Solution Architect",
+      loginError: "Identity verification failed.",
+      dashboard: "Command Center",
+      solutions: "Solution Management",
+      users: "Internal Access",
+      logs: "Audit Trail",
+      system: "System Config",
+      engine: "AI Engine Config",
+      addSolution: "Add Solution",
+      importSolution: "Import from Repo",
+      agentWorkshop: "Agent Workshop",
+      stats: {
+        totalSolutions: "Listed Products",
+        activeDeployments: "Active Nodes",
+        apiUsage: "Neural Tokens",
+        systemHealth: "Engine Health"
+      },
+      roles: {
+        SUPER_ADMIN: "Super Administrator",
+        SOLUTION_ARCHITECT: "Chief Architect",
+        SYSTEM_OP: "Operations Manager",
+        AUDITOR: "Compliance Auditor"
+      },
+      table: {
+        name: "Product Name",
+        status: "Market Status",
+        score: "Audit Score",
+        actions: "Actions",
+        edit: "Edit Details"
+      },
+      editor: {
+        basicInfo: "Basic Info",
+        productSpecs: "Product Specs & SKU",
+        scenarios: "Business Scenarios",
+        execution: "Deployment Tiers",
+        price: "Price",
+        save: "Save & Publish"
+      },
+      audit: {
+        title: "Architect's Workshop",
+        train: "Assemble Digital Team",
+        simulate: "Cloud Stress Test",
+        approve: "List for Sale",
+        trainingStatus: "Training Digital Employees...",
+        simulatingStatus: "Running Cloud Simulations..."
+      },
+      workshop: {
+        subtitle: "Train, Bind, and Evolve your Digital Workforce.",
+        newAgent: "New Agent Prototype",
+        autoAssemble: "Auto-Generate Team",
+        autoAssembleSub: "AI Architect will design a team based on solution needs.",
+        saturation: "Saturation",
+        personality: "Personality Matrix",
+        bindTitle: "Solution Integration",
+        bindLink: "Bind to Solution",
+        bindSelect: "Select target solution for neural binding",
+        feedbackTitle: "Operational Data Loop",
+        feedbackLive: "Real-time Telemetry: Active",
+        terminalTitle: "Cognitive Training Terminal",
+        terminalReady: "Terminal ready. Awaiting neural injection...",
+        injectBtn: "Inject Operational Context",
+        syncing: "Synchronizing...",
+        assembling: "Assembling custom digital team...",
+        logs: {
+          access: "Establishing Neural Bridge...",
+          fetch: "Extracting industry logic from solution:",
+          inject: "Injecting specialized protocols into agent cores...",
+          optimize: "Tuning decision-making parameters...",
+          complete: "Deployment Ready: Team intelligence upgraded."
+        }
+      }
+    },
+    execution: {
+      title: "Implementation Blueprint",
+      tabs: {
+        poc: "POC Phase",
+        production: "Enterprise Scale",
+        saas: "Managed SaaS"
+      },
+      resources: "Infra Specs",
+      human: "Project Team",
+      steps: "Milestones",
+      hardware: "Hardware Req.",
+      network: "Networking",
+      roles: "Roles",
+      hours: "Est. Hours"
+    },
+    detail: {
+      back: "Back to Mall",
+      deploy: "Execute Private Plan",
+      buy: "Buy License",
+      source: "Project Home",
+      verticalCore: "Vertical Model Core",
+      baseModel: "Foundation",
+      trainingFocus: "Focus Area",
+      capabilities: "Skills",
+      roadmap: "Execution Roadmap",
+      risk: "Risk Audit",
+      team: "Bundled Digital Team",
+      architecture: "Private Topology",
+      architectureNote: "* Optimised for high-throughput enterprise clusters.",
+      loading: "Engaging Architect...",
+      loadingSub: "Scraping Repo • Benchmarking Security • Assembling Digital Staff",
+      simulationTitle: "Cloud Brokerage & Simulation",
+      knowledgeTitle: "Solution Knowledge Base",
+      simPlatform: "Cloud",
+      simHardware: "Config",
+      simCost: "Runtime Cost",
+      simLatency: "Latency",
+      simEfficiency: "Efficiency",
+      simRecommended: "Staff Choice",
+      simMatch: "Book Node",
+      simMatching: "Matching...",
+      auditTitle: "Quality Scorecard",
+      auditSecurity: "Security",
+      auditMaintainability: "Maintainability",
+      agentWake: "Wake Agent",
+      agentAssign: "Assign Task",
+      agentMission: "Active Mission",
+      agentAwaiting: "Awaiting task instructions...",
+      agentSaturation: "Training Saturation",
+      teamGeneration: "Assembling specialized AI team for this solution...",
+    },
+    home: {
+      tagline: "Making AI Implementation as Simple as Shopping",
+      description: "The world's first enterprise AI solution mall. Pick a verified core, choose your spec, and let our digital teams handle the deployment.",
+      searchPlaceholder: "Search for industry AI (e.g., 'Smart Factory')...",
+      searchButton: "Search Mall",
+      popular: "Featured Industries",
+      noResults: "No solutions listed yet. Our architects are currently vetting new repos.",
+      architectLoading: "Digital Architect is scouting global repositories..."
+    },
+    results: {
+      found: "solutions listed",
+      details: "View Product",
+      difficulty: "Implementation",
+      qualityScore: "Architecture Rank",
+      verified: "Vetted",
+      back: "Back to Home"
+    },
+    industries: ["Healthcare", "FinTech", "E-commerce", "Logistics", "Manufacturing", "Legal", "Education", "AgriTech"]
+  },
+  zh: {
+    title: "AI 360 方案中心",
+    subtitle: "行行 AI 行",
+    nav: {
+      industries: "360 行",
+      privatization: "私有化部署",
+      riskControl: "风控合规",
+      secure: "企业级安全",
+      engine: "AI 引擎",
+      settings: "设置",
+      admin: "管理控制台"
+    },
+    settings: {
+      title: "AI 引擎设置",
+      subtitle: "配置 AI 360 平台的核心智能参数。",
+      save: "保存配置",
+      fields: {
+        apiKey: "API 密钥",
+        baseUrl: "基础 URL",
+        modelName: "模型名称",
+        temperature: "温度 (Temperature)",
+        topP: "核取样 (Top P)"
+      },
+      descriptions: {
+        gemini: "Google 的高速多模态模型。",
+        chatgpt5: "OpenAI 的最新推理巨兽。",
+        grok: "实时互联网访问与硬核智能。",
+        'claude4.5': "安全至上的企业级推理模型。",
+        'qwen3-plus': "针对电商和物流深度优化。",
+        deepseek: "业内领先的代码与数学能力。",
+        ollama: "本地运行，极致私密。"
+      }
+    },
+    deployment: {
+      mode: "部署模式",
+      cloud: "云端托管 (SaaS)",
+      edge: "边缘节点 / 私有服务器",
+      agentRegister: "注册边缘 Agent",
+      agentKey: "Agent 授权 Token",
+      tunneling: "正在建立反向安全隧道...",
+      encrypting: "正在解密安全安装包 (SM4 加密)...",
+      installing: "POC 自动化快速部署中...",
+      status: {
+        registered: "节点在线",
+        tunnel: "隧道加密",
+        packaged: "安装包已校验"
+      }
+    },
+    payment: {
+      title: "结算台",
+      select: "支付协议",
+      wechat: "微信支付",
+      alipay: "支付宝",
+      web3: "Web3 钱包",
+      usdt: "USDT (稳定币)",
+      usdc: "USDC (稳定币)",
+      digitalRmb: "数字人民币",
+      payNow: "执行支付",
+      securing: "正在安全结算...",
+      success: "支付验证通过。授权已分发。",
+      price: "结算金额",
+      walletAddr: "入金地址",
+      copy: "复制",
+      waiting: "正在等待区块链网络确认..."
+    },
+    mall: {
+      scenarios: "应用场景",
+      specifications: "方案规格 (SKU)",
+      includes: "包含服务",
+      bestSeller: "热门方案",
+      addCart: "加入项目",
+      buyNow: "立即购买",
+      architectVouch: "架构师验收",
+      skuPoc: "最小化试错版",
+      skuProd: "企业生产版",
+      skuSaas: "云端托管版"
+    },
+    admin: {
+      loginTitle: "架构师登录",
+      loginSubtitle: "进入方案审核与数字员工组建引擎。",
+      username: "用户名",
+      password: "密码",
+      loginBtn: "授权登录",
+      demoAdmin: "超级管理员",
+      demoArchitect: "方案架构师",
+      loginError: "身份验证失败。",
+      dashboard: "控制面板",
+      solutions: "方案管理",
+      users: "内部权限",
+      logs: "审计日志",
+      system: "系统配置",
+      engine: "AI 引擎配置",
+      addSolution: "新增方案",
+      importSolution: "导入方案",
+      agentWorkshop: "数字员工工坊",
+      stats: {
+        totalSolutions: "上架方案",
+        activeDeployments: "活跃节点",
+        apiUsage: "神经 Token",
+        systemHealth: "引擎状态"
+      },
+      roles: {
+        SUPER_ADMIN: "超级管理员",
+        SOLUTION_ARCHITECT: "首席架构师",
+        SYSTEM_OP: "运维主管",
+        AUDITOR: "合规审计员"
+      },
+      table: {
+        name: "产品名称",
+        status: "市场状态",
+        score: "审计得分",
+        actions: "操作",
+        edit: "编辑方案"
+      },
+      editor: {
+        basicInfo: "基础信息",
+        productSpecs: "产品规格 & SKU",
+        scenarios: "应用场景",
+        execution: "部署规格管理",
+        price: "市场价",
+        save: "保存并上架"
+      },
+      audit: {
+        title: "架构师工作室",
+        train: "组建数字团队",
+        simulate: "云仿真测试",
+        approve: "方案审核上架",
+        trainingStatus: "正在为数字员工注入行业知识库...",
+        simulatingStatus: "正在进行全环境压测仿真..."
+      },
+      workshop: {
+        subtitle: "训练、绑定并进化您的数字劳动力。",
+        newAgent: "新建 Agent 原型",
+        autoAssemble: "AI 自动组建团队",
+        autoAssembleSub: "AI 架构师将根据方案需求设计专属团队。",
+        saturation: "训练饱和度",
+        personality: "性格矩阵",
+        bindTitle: "方案能力绑定",
+        bindLink: "绑定至方案",
+        bindSelect: "选择要进行神经绑定的目标方案",
+        feedbackTitle: "运行数据反馈环",
+        feedbackLive: "实时遥测: 活跃",
+        terminalTitle: "认知训练终端",
+        terminalReady: "终端就绪。等待神经注入...",
+        injectBtn: "注入业务运行语境",
+        syncing: "同步中...",
+        assembling: "正在根据方案需求组建专属数字团队...",
+        logs: {
+          access: "正在建立神经桥接...",
+          fetch: "正在从方案中提取行业逻辑：",
+          inject: "正在将特定协议注入 Agent 核心...",
+          optimize: "正在调优决策参数...",
+          complete: "部署就绪：团队智力已升级。"
+        }
+      }
+    },
+    execution: {
+      title: "落地执行蓝图",
+      tabs: {
+        poc: "POC 阶段",
+        production: "企业生产",
+        saas: "托管服务"
+      },
+      resources: "资源要求",
+      human: "人力投入",
+      steps: "里程碑",
+      hardware: "硬件要求",
+      network: "网络环境",
+      roles: "所需专家",
+      hours: "预估周期"
+    },
+    detail: {
+      back: "返回商城",
+      deploy: "执行私有化",
+      buy: "购买授权",
+      source: "查看仓库",
+      verticalCore: "垂直模型核心",
+      baseModel: "基础模型",
+      trainingFocus: "Focus Area",
+      capabilities: "神经能力",
+      roadmap: "执行路线",
+      risk: "法律风控",
+      team: "附带数字员工团队",
+      architecture: "私有架构图",
+      architectureNote: "* 架构已针对企业级私有集群深度调优。",
+      loading: "正在连接架构师...",
+      loadingSub: "扫描开源代码 • 评估安全风险 • 组建数字团队",
+      simulationTitle: "算力撮合与仿真中心",
+      knowledgeTitle: "方案知识图谱",
+      simPlatform: "云计算平台",
+      simHardware: "实例配置",
+      simCost: "运行成本",
+      simLatency: "延迟",
+      simEfficiency: "性价比",
+      simRecommended: "官方推荐",
+      simMatch: "撮合算力",
+      simMatching: "撮合中...",
+      auditTitle: "架构质量得分",
+      auditSecurity: "安全性",
+      auditMaintainability: "可维护性",
+      agentWake: "唤醒员工",
+      agentAssign: "指派任务",
+      agentMission: "当前任务",
+      agentAwaiting: "等待任务指令...",
+      agentSaturation: "训练饱和度",
+      teamGeneration: "正在为该方案组建专属 AI 团队...",
+    },
+    home: {
+      tagline: "像逛淘宝一样选购 AI 方案",
+      description: "全球首个 AI 落地商城。挑选由架构师严格验收的开源核心，选择适合您的 SKU 规格，让专业的数字团队为您保驾护航。",
+      searchPlaceholder: "搜索行业 AI 方案 (如: '医院 CRM')...",
+      searchButton: "搜索商城",
+      popular: "热门行业分类",
+      noResults: "暂无上架方案。架构师正在紧急扫货中。",
+      architectLoading: "数字架构师正在全球开源社区搜索优质方案..."
+    },
+    results: {
+      found: "件方案已上架",
+      details: "查看详情",
+      difficulty: "落地难度",
+      qualityScore: "架构评级",
+      verified: "已验收",
+      back: "返回首页"
+    },
+    industries: ["医疗健康", "金融科技", "电商零售", "物流仓储", "工业制造", "法律合规", "教育培训", "农业科技"]
+  }
+};
