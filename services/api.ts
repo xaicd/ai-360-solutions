@@ -1,5 +1,5 @@
 
-import { AdminUser, Solution, AuditLog, ApiResponse, UserRole } from '../types';
+import { AdminUser, Solution, AuditLog, ApiResponse, UserRole, DigitalAgent } from '../types';
 
 // ==========================================
 // CLIENT-SIDE API SERVICE
@@ -45,17 +45,46 @@ const remoteApi = {
         return { success: false, error: 'Network Error', timestamp: new Date().toISOString() };
       }
     },
-    create: async (solution: Solution, userId: string): Promise<ApiResponse<Solution>> => {
-      // Logic to be implemented in backend
-      return { success: false, error: 'Not implemented in this version', timestamp: new Date().toISOString() };
+    create: async (solution: Partial<Solution>, userId: string): Promise<ApiResponse<Solution>> => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/solutions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(solution)
+        });
+        return await res.json();
+      } catch (e) {
+        return { success: false, error: 'Network Error', timestamp: new Date().toISOString() };
+      }
+    },
+    update: async (id: string, data: Partial<Solution>, userId: string): Promise<ApiResponse<boolean>> => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/solutions/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        return await res.json();
+      } catch (e) {
+        return { success: false, error: 'Network Error', timestamp: new Date().toISOString() };
+      }
     },
     updateStatus: async (id: string, status: string, userId: string): Promise<ApiResponse<boolean>> => {
-      // Logic to be implemented in backend
-      return { success: true, data: true, timestamp: new Date().toISOString() };
+      return remoteApi.solutions.update(id, { status: status as any }, userId);
     },
     delete: async (id: string, userId: string): Promise<ApiResponse<boolean>> => {
-      // Logic to be implemented in backend
+      // Mock delete for now
       return { success: true, data: true, timestamp: new Date().toISOString() };
+    }
+  },
+  agents: {
+    list: async (): Promise<ApiResponse<DigitalAgent[]>> => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/agents`);
+        return await res.json();
+      } catch (e) {
+        return { success: false, error: 'Network Error', timestamp: new Date().toISOString() };
+      }
     }
   },
   users: {

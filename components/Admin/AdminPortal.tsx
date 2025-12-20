@@ -30,6 +30,7 @@ const AdminPortal: React.FC<AdminPortalProps> = ({
   const t = translations[language];
   const [currentView, setCurrentView] = useState<AdminView>(AdminView.DASHBOARD);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [workshopTargetId, setWorkshopTargetId] = useState<string>('');
 
   const canAccessSolutions = [UserRole.SUPER_ADMIN, UserRole.SOLUTION_ARCHITECT].includes(user.role);
   const canAccessSystem = [UserRole.SUPER_ADMIN, UserRole.SYSTEM_OP].includes(user.role);
@@ -97,8 +98,17 @@ const AdminPortal: React.FC<AdminPortalProps> = ({
 
       <div className="flex-1 p-8 overflow-y-auto">
         {currentView === AdminView.DASHBOARD && <AdminDashboard language={language} />}
-        {currentView === AdminView.SOLUTIONS && <SolutionManager language={language} />}
-        {currentView === AdminView.AGENTS_WORKSHOP && <AgentWorkshop language={language} />}
+        {currentView === AdminView.SOLUTIONS && <SolutionManager
+          language={language}
+          onBindAgents={(id) => {
+            setWorkshopTargetId(id);
+            setCurrentView(AdminView.AGENTS_WORKSHOP);
+          }}
+        />}
+        {currentView === AdminView.AGENTS_WORKSHOP && <AgentWorkshop
+          language={language}
+          initialSolutionId={workshopTargetId}
+        />}
         {currentView === AdminView.CLOUD_RESOURCES && <CloudManager language={language} />}
         {currentView === AdminView.FINANCE && <FinanceManager language={language} />}
         {currentView === AdminView.USERS && <UserManager language={language} />}

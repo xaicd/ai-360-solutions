@@ -113,6 +113,7 @@ app.get('/api/solutions', async (req, res) => {
             scenarios: JSON.parse(s.scenarios),
             deploymentModes: JSON.parse(s.deploymentModes),
             executionPlan: s.executionPlan ? JSON.parse(s.executionPlan) : undefined,
+            digitalTeam: s.agents,
             architectReview: {
                 qualityScore: s.qualityScore,
                 securityVerdict: s.securityVerdict,
@@ -189,7 +190,114 @@ app.get('/api/solutions/:id', async (req, res) => {
     }
 });
 
-// 4. Users
+// 3b. Create Solution
+app.post('/api/solutions', async (req, res) => {
+    try {
+        const { agents, ...data } = req.body;
+
+        const solution = await db.solution.create({
+            data: {
+                ...data,
+                tags: JSON.stringify(data.tags || []),
+                scenarios: JSON.stringify(data.scenarios || []),
+                deploymentModes: JSON.stringify(data.deploymentModes || ['CLOUD']),
+                executionPlan: JSON.stringify(data.executionPlan || {}),
+                agents: {
+                    create: (agents || []).map((a: any) => ({
+                        role: a.role,
+                        name: a.name,
+                        avatarSeed: a.avatarSeed || 'robot-1',
+                        personality: a.personality || 'Standard AI',
+                        status: 'HIBERNATING',
+                        saturation: 0
+                    }))
+                }
+            }
+        });
+        res.json({ success: true, data: solution });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ success: false, error: 'Failed to create solution' });
+    }
+});
+
+// 3c. Update Solution
+app.put('/api/solutions/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { agents, ...data } = req.body;
+
+        // Clean up data not belonging to Solution model or handle them
+        // (Prisma will ignore extra fields if not in schema, but nice to be clean)
+        delete data.id;
+        delete data.createdAt;
+        delete data.updatedAt;
+        // Remove nested objects that might be passed
+        delete data.architectReview; // If we want to update this we need to map it flattened or JSON? 
+        // Wait, schema has flat fields for architectReview: qualityScore, securityVerdict, etc.
+        // Frontend sends nested `architectReview` object?
+        // Let's flatten `architectReview` if present.
+
+        let flatData = { ...data };
+        if (data.architectReview) {
+            flatData = {
+                ...flatData,
+                ...data.architectReview
+            };
+            delete flatData.architectReview;
+        }
+
+        // Use transaction to update solution and re-create agents
+        await db.$transaction(async (tx) => {
+            // Update Core Solution
+            await tx.solution.update({
+                where: { id },
+                data: {
+                    ...flatData,
+                    tags: JSON.stringify(flatData.tags || []),
+                    scenarios: JSON.stringify(flatData.scenarios || []),
+                    deploymentModes: JSON.stringify(flatData.deploymentModes || ['CLOUD']),
+                    executionPlan: JSON.stringify(flatData.executionPlan || {}),
+                }
+            });
+
+            // Update Agents if provided
+            if (agents) {
+                await tx.digitalAgent.deleteMany({ where: { solutionId: id } });
+                if (agents.length > 0) {
+                    await tx.digitalAgent.createMany({
+                        data: agents.map((a: any) => ({
+                            solutionId: id,
+                            role: a.role,
+                            name: a.name,
+                            avatarSeed: a.avatarSeed || 'robot-1',
+                            personality: a.personality || 'Standard AI',
+                            status: 'HIBERNATING',
+                            saturation: 0
+                        }))
+                    });
+                }
+            }
+        });
+
+        res.json({ success: true, data: true });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ success: false, error: 'Failed to update solution' });
+    }
+});
+
+// 4. Agents (Global List)
+app.get('/api/agents', async (req, res) => {
+    try {
+        const agents = await db.digitalAgent.findMany();
+        res.json({ success: true, data: agents });
+    } catch (e) {
+        res.status(500).json({ success: false, error: 'Failed to fetch agents' });
+    }
+});
+
+// 4b. Users
 app.get('/api/users', async (req, res) => {
     const users = await db.user.findMany();
     res.json({ success: true, data: users });

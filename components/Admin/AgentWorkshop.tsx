@@ -4,21 +4,22 @@ import { Language, DigitalAgent, Solution } from '../../types';
 import { api } from '../../services/api';
 import { generateDigitalTeam } from '../../services/geminiService';
 import { translations } from '../../translations';
-import { 
+import {
   Brain, Zap, Database, CheckCircle2, Loader2,
   Terminal, Activity, Plus, Settings2, Target, Sparkles
 } from 'lucide-react';
 
 interface AgentWorkshopProps {
   language: Language;
+  initialSolutionId?: string;
 }
 
-const AgentWorkshop: React.FC<AgentWorkshopProps> = ({ language }) => {
+const AgentWorkshop: React.FC<AgentWorkshopProps> = ({ language, initialSolutionId }) => {
   const t = translations[language];
   const [agents, setAgents] = useState<DigitalAgent[]>([]);
   const [solutions, setSolutions] = useState<Solution[]>([]);
   const [selectedAgent, setSelectedAgent] = useState<DigitalAgent | null>(null);
-  const [selectedSolutionId, setSelectedSolutionId] = useState<string>('');
+  const [selectedSolutionId, setSelectedSolutionId] = useState<string>(initialSolutionId || '');
   const [isTraining, setIsTraining] = useState(false);
   const [isAssembling, setIsAssembling] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
@@ -26,14 +27,37 @@ const AgentWorkshop: React.FC<AgentWorkshopProps> = ({ language }) => {
   useEffect(() => {
     // Initial agents
     setAgents([
-      { 
-        id: 'a1', name: 'Zoe-92', role: 'Tech Lead', avatarSeed: 'agent1', 
+      {
+        id: 'a1', name: 'Zoe-92', role: 'Tech Lead', avatarSeed: 'agent1',
         status: 'HIBERNATING', saturation: 72, personality: 'Precise & Logical',
         trainingHistory: [], boundSolutionId: '1'
       }
     ]);
     api.solutions.list().then(res => res.data && setSolutions(res.data));
   }, []);
+
+  useEffect(() => {
+    if (selectedSolutionId && solutions.length > 0) {
+      const sol = solutions.find(s => s.id === selectedSolutionId);
+      if (sol) {
+        // Use seeded data if available
+        const team = (sol as any).digitalTeam || [];
+        if (team.length > 0) {
+          setAgents(team);
+          setSelectedAgent(team[0]);
+        } else {
+          setAgents([]);
+          setSelectedAgent(null);
+        }
+      }
+    }
+  }, [selectedSolutionId, solutions]);
+
+  useEffect(() => {
+    if (initialSolutionId) {
+      setSelectedSolutionId(initialSolutionId);
+    }
+  }, [initialSolutionId]);
 
   const handleAutoAssemble = async () => {
     if (!selectedSolutionId) {
@@ -59,14 +83,14 @@ const AgentWorkshop: React.FC<AgentWorkshopProps> = ({ language }) => {
     if (!selectedAgent) return;
     setIsTraining(true);
     setLogs([`[${new Date().toLocaleTimeString()}] ${t.admin.workshop.logs.access}`]);
-    
+
     let p = 0;
     const interval = setInterval(() => {
       p += 10;
       if (p === 20) setLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] ${t.admin.workshop.logs.fetch} ${selectedAgent.boundSolutionId || 'General'}`]);
       if (p === 50) setLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] ${t.admin.workshop.logs.inject}`]);
       if (p === 80) setLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] ${t.admin.workshop.logs.optimize}`]);
-      
+
       if (p >= 100) {
         clearInterval(interval);
         setIsTraining(false);
@@ -85,59 +109,58 @@ const AgentWorkshop: React.FC<AgentWorkshopProps> = ({ language }) => {
           </h2>
           <p className="text-slate-400 text-sm mt-1">{t.admin.workshop.subtitle}</p>
         </div>
-        
+
         <div className="flex items-center gap-3 bg-slate-800 p-2 rounded-2xl border border-slate-700">
-           <select 
-             value={selectedSolutionId}
-             onChange={(e) => setSelectedSolutionId(e.target.value)}
-             className="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-xs text-white outline-none min-w-[200px]"
-           >
-             <option value="">{t.admin.workshop.bindSelect}</option>
-             {solutions.map(s => <option key={s.id} value={s.id}>{s.title}</option>)}
-           </select>
-           <button 
-             onClick={handleAutoAssemble}
-             disabled={isAssembling || !selectedSolutionId}
-             className="bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-lg shadow-blue-900/20"
-           >
-             {isAssembling ? <Loader2 className="animate-spin" size={14} /> : <Sparkles size={14} />}
-             {t.admin.workshop.autoAssemble}
-           </button>
+          <select
+            value={selectedSolutionId}
+            onChange={(e) => setSelectedSolutionId(e.target.value)}
+            className="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-xs text-white outline-none min-w-[200px]"
+          >
+            <option value="">{t.admin.workshop.bindSelect}</option>
+            {solutions.map(s => <option key={s.id} value={s.id}>{s.title}</option>)}
+          </select>
+          <button
+            onClick={handleAutoAssemble}
+            disabled={isAssembling || !selectedSolutionId}
+            className="bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-lg shadow-blue-900/20"
+          >
+            {isAssembling ? <Loader2 className="animate-spin" size={14} /> : <Sparkles size={14} />}
+            {t.admin.workshop.autoAssemble}
+          </button>
         </div>
       </div>
 
       <div className="grid grid-cols-12 gap-8 flex-1 overflow-hidden">
         {/* Agent Inventory */}
         <div className="col-span-4 space-y-4 overflow-y-auto pr-2 custom-scrollbar">
-           {agents.map(a => (
-             <button 
-               key={a.id}
-               onClick={() => setSelectedAgent(a)}
-               className={`w-full text-left p-5 rounded-2xl border transition-all relative overflow-hidden group ${
-                 selectedAgent?.id === a.id ? 'bg-blue-600/10 border-blue-500 shadow-lg' : 'bg-slate-800 border-slate-700 hover:border-slate-600'
-               }`}
-             >
-               {a.status === 'AWAKE' && (
-                 <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
-               )}
-               <div className="flex items-center gap-4">
-                 <img src={`https://picsum.photos/seed/${a.avatarSeed}/100`} className="w-12 h-12 rounded-xl border border-slate-600 group-hover:scale-110 transition-transform" />
-                 <div className="flex-1">
-                   <h4 className="font-bold text-white text-sm">{a.name}</h4>
-                   <p className="text-[9px] text-slate-500 uppercase font-black">{a.role}</p>
-                 </div>
-                 <div className="text-right">
-                   <div className={`text-[9px] font-black mb-1 ${a.saturation > 80 ? 'text-emerald-400' : 'text-blue-400'}`}>{a.saturation}%</div>
-                   <div className="h-1 w-10 bg-slate-900 rounded-full overflow-hidden">
-                     <div className="h-full bg-blue-500" style={{ width: `${a.saturation}%` }}></div>
-                   </div>
-                 </div>
-               </div>
-             </button>
-           ))}
-           <button className="w-full py-4 rounded-2xl border-2 border-dashed border-slate-700 text-slate-500 hover:border-blue-500 hover:text-blue-400 flex items-center justify-center gap-2 transition-all text-xs font-bold">
-             <Plus size={16} /> {t.admin.workshop.newAgent}
-           </button>
+          {agents.map(a => (
+            <button
+              key={a.id}
+              onClick={() => setSelectedAgent(a)}
+              className={`w-full text-left p-5 rounded-2xl border transition-all relative overflow-hidden group ${selectedAgent?.id === a.id ? 'bg-blue-600/10 border-blue-500 shadow-lg' : 'bg-slate-800 border-slate-700 hover:border-slate-600'
+                }`}
+            >
+              {a.status === 'AWAKE' && (
+                <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
+              )}
+              <div className="flex items-center gap-4">
+                <img src={`https://picsum.photos/seed/${a.avatarSeed}/100`} className="w-12 h-12 rounded-xl border border-slate-600 group-hover:scale-110 transition-transform" />
+                <div className="flex-1">
+                  <h4 className="font-bold text-white text-sm">{a.name}</h4>
+                  <p className="text-[9px] text-slate-500 uppercase font-black">{a.role}</p>
+                </div>
+                <div className="text-right">
+                  <div className={`text-[9px] font-black mb-1 ${a.saturation > 80 ? 'text-emerald-400' : 'text-blue-400'}`}>{a.saturation}%</div>
+                  <div className="h-1 w-10 bg-slate-900 rounded-full overflow-hidden">
+                    <div className="h-full bg-blue-500" style={{ width: `${a.saturation}%` }}></div>
+                  </div>
+                </div>
+              </div>
+            </button>
+          ))}
+          <button className="w-full py-4 rounded-2xl border-2 border-dashed border-slate-700 text-slate-500 hover:border-blue-500 hover:text-blue-400 flex items-center justify-center gap-2 transition-all text-xs font-bold">
+            <Plus size={16} /> {t.admin.workshop.newAgent}
+          </button>
         </div>
 
         {/* Configuration & Training Workspace */}
@@ -181,8 +204,8 @@ const AgentWorkshop: React.FC<AgentWorkshopProps> = ({ language }) => {
                       </h4>
                     </div>
                     <div className="p-3 bg-slate-900 rounded-xl border border-slate-800 text-xs text-slate-400 flex items-center justify-between">
-                       <span>{selectedAgent.boundSolutionId ? solutions.find(s => s.id === selectedAgent.boundSolutionId)?.title : 'System Internal'}</span>
-                       <CheckCircle2 size={14} className="text-emerald-500" />
+                      <span>{selectedAgent.boundSolutionId ? solutions.find(s => s.id === selectedAgent.boundSolutionId)?.title : 'System Internal'}</span>
+                      <CheckCircle2 size={14} className="text-emerald-500" />
                     </div>
                   </div>
 
@@ -205,7 +228,7 @@ const AgentWorkshop: React.FC<AgentWorkshopProps> = ({ language }) => {
                   <h4 className="text-sm font-black text-white flex items-center gap-2 uppercase tracking-widest">
                     <Terminal size={16} className="text-blue-500" /> {t.admin.workshop.terminalTitle}
                   </h4>
-                  <button 
+                  <button
                     onClick={handleTrain}
                     disabled={isTraining}
                     className="px-6 py-2 bg-purple-600 hover:bg-purple-500 disabled:bg-slate-800 text-white rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-purple-900/20"
@@ -226,11 +249,11 @@ const AgentWorkshop: React.FC<AgentWorkshopProps> = ({ language }) => {
             </>
           ) : (
             <div className="flex-1 bg-slate-800/30 rounded-3xl border border-slate-700 border-dashed flex flex-col items-center justify-center text-slate-500">
-               <div className="relative mb-6">
-                 <Brain size={84} className="opacity-10" />
-                 <Sparkles size={24} className="absolute top-0 right-0 text-blue-500 animate-bounce opacity-40" />
-               </div>
-               <p className="font-bold tracking-widest uppercase text-xs">Select or Assemble a Digital Team</p>
+              <div className="relative mb-6">
+                <Brain size={84} className="opacity-10" />
+                <Sparkles size={24} className="absolute top-0 right-0 text-blue-500 animate-bounce opacity-40" />
+              </div>
+              <p className="font-bold tracking-widest uppercase text-xs">Select or Assemble a Digital Team</p>
             </div>
           )}
         </div>

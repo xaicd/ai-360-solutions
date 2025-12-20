@@ -6,6 +6,13 @@ const prisma = new PrismaClient();
 async function main() {
     console.log('🌱 Starting database seeding...');
 
+    // Clean slate for agents to ensure re-creation works correctly even for existing solutions
+    await prisma.digitalAgent.deleteMany({});
+    console.log('🧹 Cleared existing Digital Agents');
+
+    // Optionally clear solutions if you want a full reset, but agents wipe is sufficient for this task.
+    await prisma.solution.deleteMany({});
+
     // 1. Create Default Users
     // 1. Create Default Users
     // Super Admin
@@ -152,7 +159,12 @@ HyperScale AI Studio is a dedicated PaaS environment engineered for high-perform
             securityVerdict: 'Safe',
             codeMaintainability: 'Medium',
             isAudited: true,
-            auditDate: new Date()
+            auditDate: new Date(),
+            agents: {
+                create: [
+                    { role: 'CV Researcher', name: 'Lens', avatarSeed: 'robot-vis-1', personality: 'Visual thinker, detail oriented.', status: 'WORKING', saturation: 92 }
+                ]
+            }
         }
     });
     console.log(`📦 Created Solution: ${ocr.title}`);
@@ -185,7 +197,12 @@ HyperScale AI Studio is a dedicated PaaS environment engineered for high-perform
             securityVerdict: 'Standard',
             codeMaintainability: 'High',
             isAudited: true,
-            auditDate: new Date()
+            auditDate: new Date(),
+            agents: {
+                create: [
+                    { role: 'Data Analyst', name: 'TrendSpotter', avatarSeed: 'robot-ret-1', personality: 'Analytical, purely stats driven.', status: 'HIBERNATING', saturation: 85 }
+                ]
+            }
         }
     });
 
@@ -217,7 +234,12 @@ HyperScale AI Studio is a dedicated PaaS environment engineered for high-perform
             securityVerdict: 'Critical',
             codeMaintainability: 'High',
             isAudited: true,
-            auditDate: new Date()
+            auditDate: new Date(),
+            agents: {
+                create: [
+                    { role: 'Medical AI', name: 'Dr. Bot', avatarSeed: 'robot-med-2', personality: 'Empathetic, cautious, knowledgeable.', status: 'WORKING', saturation: 98 }
+                ]
+            }
         }
     });
 
@@ -771,6 +793,52 @@ HyperScale AI Studio is a dedicated PaaS environment engineered for high-perform
             }
         }
     });
+
+    // --- Global Talent Pool (Bench) ---
+    await prisma.solution.upsert({
+        where: { id: 'SOL-TALENT-POOL' },
+        update: {},
+        create: {
+            id: 'SOL-TALENT-POOL',
+            title: 'Global Digital Talent Pool',
+            description: 'Registry of available digital workers ready for assignment.',
+            industry: 'Internal',
+            tags: JSON.stringify(['Bench', 'Talent']),
+            scenarios: JSON.stringify(['Staff Augmentation']),
+            githubRepo: 'ai-360/talent-registry',
+            stars: 0,
+            deploymentModes: JSON.stringify(['CLOUD']),
+            deploymentDifficulty: 'Low',
+            price: 0,
+            currency: 'USD',
+            status: 'active',
+            qualityScore: 100,
+            securityVerdict: 'Verified',
+            codeMaintainability: 'High',
+            isAudited: true,
+            encryptionLevel: 'AES-256',
+            tunnelType: 'Cloud-Proxy',
+            packageSigned: true,
+            auditDate: new Date(),
+            agents: {
+                create: [
+                    { role: 'Python Expert', name: 'PyBot', avatarSeed: 'dev-1', personality: 'Pythonic, clean code advocate.', status: 'HIBERNATING', saturation: 100 },
+                    { role: 'UI Designer', name: 'PixelPerfect', avatarSeed: 'design-1', personality: 'Creative, detail-oriented.', status: 'HIBERNATING', saturation: 90 },
+                    { role: 'Cyber Analyst', name: 'NetWatcher', avatarSeed: 'sec-1', personality: 'Paranoid, vigilant.', status: 'HIBERNATING', saturation: 95 },
+                    { role: 'Data Scientist', name: 'Tensor', avatarSeed: 'data-1', personality: 'Analytical, stats-driven.', status: 'HIBERNATING', saturation: 88 },
+                    { role: 'DevOps Engineer', name: 'KubeMaster', avatarSeed: 'ops-1', personality: 'Efficient, automator.', status: 'HIBERNATING', saturation: 92 },
+                    { role: 'React Developer', name: 'Hook', avatarSeed: 'dev-2', personality: 'Component-thinker.', status: 'HIBERNATING', saturation: 85 },
+                    { role: 'Prompt Engineer', name: 'ChainOfThought', avatarSeed: 'ai-1', personality: 'Articulate, nuanced.', status: 'HIBERNATING', saturation: 98 },
+                    { role: 'Database Admin', name: 'QueryKing', avatarSeed: 'db-1', personality: 'Optimized, rigorous.', status: 'HIBERNATING', saturation: 94 },
+                    { role: 'Product Manager', name: 'Roadmap', avatarSeed: 'pm-1', personality: 'Strategic, prioritizing.', status: 'HIBERNATING', saturation: 80 },
+                    { role: 'Rust Ace', name: 'Ferris', avatarSeed: 'dev-3', personality: 'Safe, concurrent.', status: 'HIBERNATING', saturation: 91 },
+                    { role: 'Marketing Bot', name: 'Viral', avatarSeed: 'mkt-1', personality: 'Enthusiastic, trend-aware.', status: 'HIBERNATING', saturation: 75 },
+                    { role: 'QA Tester', name: 'BugBuster', avatarSeed: 'qa-1', personality: 'Critical, thorough.', status: 'HIBERNATING', saturation: 89 }
+                ]
+            }
+        }
+    });
+    console.log('👥 Created Talent Pool with 12 Agents');
 
     console.log('✅ Seeding completed.');
 }

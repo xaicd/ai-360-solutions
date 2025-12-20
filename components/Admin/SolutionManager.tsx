@@ -3,22 +3,23 @@ import React, { useEffect, useState } from 'react';
 import { Language, Solution } from '../../types';
 import { translations } from '../../translations';
 import { api } from '../../services/api';
-import { 
-  Edit2, Trash2, PauseCircle, 
-  Loader2, Plus, ShieldCheck, DollarSign, ExternalLink, Database, Search, Download, X
+import {
+  Edit2, Trash2, PauseCircle,
+  Loader2, Plus, ShieldCheck, DollarSign, ExternalLink, Database, Search, Download, X, Brain
 } from 'lucide-react';
 import AuditWorkflowModal from './AuditWorkflowModal';
 import SolutionEditor from './SolutionEditor';
 
 interface SolutionManagerProps {
   language: Language;
+  onBindAgents: (solutionId: string) => void;
 }
 
-const SolutionManager: React.FC<SolutionManagerProps> = ({ language }) => {
+const SolutionManager: React.FC<SolutionManagerProps> = ({ language, onBindAgents }) => {
   const t = translations[language];
   const [solutions, setSolutions] = useState<Solution[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentUserId] = useState('1'); 
+  const [currentUserId] = useState('1');
   const [auditingSolution, setAuditingSolution] = useState<Solution | null>(null);
   const [editingSolution, setEditingSolution] = useState<Solution | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
@@ -66,10 +67,8 @@ const SolutionManager: React.FC<SolutionManagerProps> = ({ language }) => {
     try {
       if (editingSolution) {
         // Update
-        const res = await api.solutions.updateStatus(editingSolution.id, data.status as any, currentUserId);
+        const res = await api.solutions.update(editingSolution.id, data, currentUserId);
         if (res.success) {
-          // Note: In a real app we'd call a full update endpoint.
-          // For the mock, we assume the local DB handle this.
           loadSolutions();
         }
       } else {
@@ -104,7 +103,7 @@ const SolutionManager: React.FC<SolutionManagerProps> = ({ language }) => {
   };
 
   const getStatusColor = (status: string) => {
-    switch(status) {
+    switch (status) {
       case 'active': return 'bg-green-500/10 text-green-400 border-green-500/20';
       case 'pending': return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20';
       case 'audited': return 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20';
@@ -115,7 +114,7 @@ const SolutionManager: React.FC<SolutionManagerProps> = ({ language }) => {
 
   if (editingSolution || isAddingNew) {
     return (
-      <SolutionEditor 
+      <SolutionEditor
         solution={editingSolution || undefined}
         language={language}
         onSave={onEditorSave}
@@ -137,23 +136,23 @@ const SolutionManager: React.FC<SolutionManagerProps> = ({ language }) => {
               <Download size={20} className="text-blue-400" /> {t.admin.importSolution}
             </h3>
             <p className="text-slate-400 text-sm mb-6">Enter a GitHub repository URL. Our AI Architect will audit the code and pre-fill solution attributes.</p>
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={importUrl}
               onChange={(e) => setImportUrl(e.target.value)}
               placeholder="https://github.com/organization/repo"
               className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white mb-6 focus:ring-2 focus:ring-blue-500 outline-none"
             />
             <div className="flex justify-end gap-3">
-               <button onClick={() => setIsImporting(false)} className="px-6 py-2 text-slate-500 hover:text-white transition-colors">Cancel</button>
-               <button onClick={handleImport} className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-2 rounded-xl font-bold shadow-lg shadow-blue-900/20">Analyze & Import</button>
+              <button onClick={() => setIsImporting(false)} className="px-6 py-2 text-slate-500 hover:text-white transition-colors">Cancel</button>
+              <button onClick={handleImport} className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-2 rounded-xl font-bold shadow-lg shadow-blue-900/20">Analyze & Import</button>
             </div>
           </div>
         </div>
       )}
 
       {auditingSolution && (
-        <AuditWorkflowModal 
+        <AuditWorkflowModal
           solution={auditingSolution}
           language={language}
           onClose={() => setAuditingSolution(null)}
@@ -171,13 +170,13 @@ const SolutionManager: React.FC<SolutionManagerProps> = ({ language }) => {
           <p className="text-slate-400 text-sm mt-1">Manage product attributes, SKUs, and marketplace visibility.</p>
         </div>
         <div className="flex gap-3">
-          <button 
+          <button
             onClick={() => setIsImporting(true)}
             className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2 border border-slate-700"
           >
             <Download size={16} /> {t.admin.importSolution}
           </button>
-          <button 
+          <button
             onClick={() => setIsAddingNew(true)}
             className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2 shadow-lg shadow-blue-900/20"
           >
@@ -189,15 +188,15 @@ const SolutionManager: React.FC<SolutionManagerProps> = ({ language }) => {
       <div className="bg-slate-800 p-4 rounded-t-xl border-x border-t border-slate-700 flex gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-2.5 text-slate-500" size={18} />
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="Search mall inventory..."
             className="w-full bg-slate-900 border border-slate-700 rounded-lg py-2 pl-10 pr-4 text-sm text-white outline-none focus:border-blue-500"
           />
         </div>
         <select className="bg-slate-900 border border-slate-700 rounded-lg px-4 text-sm text-slate-400">
-           <option>All Industries</option>
-           {t.industries.map(i => <option key={i}>{i}</option>)}
+          <option>All Industries</option>
+          {t.industries.map(i => <option key={i}>{i}</option>)}
         </select>
       </div>
 
@@ -248,6 +247,9 @@ const SolutionManager: React.FC<SolutionManagerProps> = ({ language }) => {
                         <ShieldCheck size={16} />
                       </button>
                     )}
+                    <button onClick={() => onBindAgents(sol.id)} className="p-1.5 hover:bg-purple-500/20 text-purple-400 rounded transition-colors" title="Bind Digital Agent Team">
+                      <Brain size={16} />
+                    </button>
                     <button onClick={() => setEditingSolution(sol)} className="p-1.5 hover:bg-slate-700 text-slate-400 rounded transition-colors">
                       <Edit2 size={16} />
                     </button>

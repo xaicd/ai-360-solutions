@@ -2,8 +2,8 @@
 import React, { useState } from 'react';
 import { DigitalAgent, Language, AgentStatus } from '../types';
 import { translations } from '../translations';
-import { 
-  Bot, Brain, Terminal, BarChart, Shield, Wrench, 
+import {
+  Bot, Brain, Terminal, BarChart, Shield, Wrench,
   Power, Zap, Activity, Database
 } from 'lucide-react';
 
@@ -26,7 +26,7 @@ const RoleIcon = ({ role }: { role: string }) => {
 
 const DigitalTeam: React.FC<DigitalTeamProps> = ({ agents: initialAgents, language, onWakeAgent, onAssignTask }) => {
   const t = translations[language];
-  const [agents, setAgents] = useState(initialAgents);
+  const [agents, setAgents] = useState(initialAgents || []);
 
   const handleWake = (id: string) => {
     setAgents(prev => prev.map(a => a.id === id ? { ...a, status: 'AWAKE' } : a));
@@ -50,20 +50,19 @@ const DigitalTeam: React.FC<DigitalTeamProps> = ({ agents: initialAgents, langua
           {t.detail.team}
         </h3>
         <div className="flex gap-4">
-           <div className="flex items-center gap-2 px-4 py-1.5 bg-slate-900 rounded-full border border-slate-700">
-             <Database size={14} className="text-blue-400" />
-             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Feedback Loop: Active</span>
-           </div>
+          <div className="flex items-center gap-2 px-4 py-1.5 bg-slate-900 rounded-full border border-slate-700">
+            <Database size={14} className="text-blue-400" />
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Feedback Loop: Active</span>
+          </div>
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
         {agents.map((agent) => (
-          <div 
-            key={agent.id} 
-            className={`group relative p-6 rounded-2xl border transition-all duration-500 overflow-hidden ${
-              agent.status === 'HIBERNATING' ? 'bg-slate-900/40 border-slate-800' : 'bg-slate-900 border-slate-700 shadow-xl shadow-blue-900/10'
-            }`}
+          <div
+            key={agent.id}
+            className={`group relative p-6 rounded-2xl border transition-all duration-500 overflow-hidden ${agent.status === 'HIBERNATING' ? 'bg-slate-900/40 border-slate-800' : 'bg-slate-900 border-slate-700 shadow-xl shadow-blue-900/10'
+              }`}
           >
             {/* Neural Pulse Background */}
             {agent.status !== 'HIBERNATING' && (
@@ -72,20 +71,18 @@ const DigitalTeam: React.FC<DigitalTeamProps> = ({ agents: initialAgents, langua
 
             <div className="flex items-start gap-6 mb-6">
               <div className="relative">
-                <img 
-                  src={`https://picsum.photos/seed/${agent.avatarSeed}/200`} 
+                <img
+                  src={`https://picsum.photos/seed/${agent.avatarSeed}/200`}
                   alt={agent.name}
-                  className={`w-16 h-16 rounded-2xl object-cover border-2 transition-all duration-500 ${
-                    agent.status === 'HIBERNATING' ? 'border-slate-700 grayscale' : 'border-blue-500 ring-4 ring-blue-500/10'
-                  }`}
+                  className={`w-16 h-16 rounded-2xl object-cover border-2 transition-all duration-500 ${agent.status === 'HIBERNATING' ? 'border-slate-700 grayscale' : 'border-blue-500 ring-4 ring-blue-500/10'
+                    }`}
                 />
-                <div className={`absolute -bottom-2 -right-2 rounded-lg p-1.5 border ${
-                  agent.status === 'HIBERNATING' ? 'bg-slate-800 border-slate-700' : 'bg-slate-900 border-blue-500 shadow-lg'
-                }`}>
+                <div className={`absolute -bottom-2 -right-2 rounded-lg p-1.5 border ${agent.status === 'HIBERNATING' ? 'bg-slate-800 border-slate-700' : 'bg-slate-900 border-blue-500 shadow-lg'
+                  }`}>
                   <RoleIcon role={agent.role} />
                 </div>
               </div>
-              
+
               <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-start">
                   <div>
@@ -96,7 +93,7 @@ const DigitalTeam: React.FC<DigitalTeamProps> = ({ agents: initialAgents, langua
                     {agent.status}
                   </span>
                 </div>
-                
+
                 {/* Saturation Bar */}
                 <div className="mt-4">
                   <div className="flex justify-between items-center mb-1">
@@ -104,8 +101,8 @@ const DigitalTeam: React.FC<DigitalTeamProps> = ({ agents: initialAgents, langua
                     <span className="text-[9px] text-blue-400 font-mono font-bold">{agent.saturation || 85}%</span>
                   </div>
                   <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-blue-500 transition-all duration-1000" 
+                    <div
+                      className="h-full bg-blue-500 transition-all duration-1000"
                       style={{ width: `${agent.saturation || 85}%` }}
                     ></div>
                   </div>
@@ -115,7 +112,7 @@ const DigitalTeam: React.FC<DigitalTeamProps> = ({ agents: initialAgents, langua
 
             <div className="space-y-4">
               {agent.status === 'HIBERNATING' ? (
-                <button 
+                <button
                   onClick={() => handleWake(agent.id)}
                   className="w-full py-3 bg-slate-800 hover:bg-blue-600 text-slate-400 hover:text-white rounded-xl text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2"
                 >
@@ -124,12 +121,12 @@ const DigitalTeam: React.FC<DigitalTeamProps> = ({ agents: initialAgents, langua
               ) : (
                 <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
                   <div className="bg-slate-950/50 rounded-xl p-4 border border-slate-800 mb-4">
-                     <p className="text-[10px] text-slate-500 uppercase font-black mb-2 flex items-center gap-2">
-                       <Zap size={10} className="text-yellow-500" /> {t.detail.agentMission}
-                     </p>
-                     <p className="text-xs text-slate-300 font-mono italic">
-                       {agent.currentTask || t.detail.agentAwaiting}
-                     </p>
+                    <p className="text-[10px] text-slate-500 uppercase font-black mb-2 flex items-center gap-2">
+                      <Zap size={10} className="text-yellow-500" /> {t.detail.agentMission}
+                    </p>
+                    <p className="text-xs text-slate-300 font-mono italic">
+                      {agent.currentTask || t.detail.agentAwaiting}
+                    </p>
                   </div>
                   <div className="flex gap-2">
                     <button className="flex-1 py-2 bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white rounded-lg text-[10px] font-black uppercase tracking-widest transition-all border border-blue-600/30">
