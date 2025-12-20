@@ -8,16 +8,17 @@ import PaymentGateway from './PaymentGateway';
 import {
   CheckCircle2, Cpu, Lock, Shield, Server, Zap, Loader2,
   DollarSign, ShoppingCart, Target, PackageCheck, Briefcase,
-  Terminal, Globe, HardDrive, Download, Key, Bitcoin
+  Terminal, Globe, HardDrive, Download, Key, Bitcoin, Home
 } from 'lucide-react';
 
 interface SolutionDetailProps {
   solution: EnrichedSolution;
   onBack: () => void;
+  onGoHome: () => void;
   language: Language;
 }
 
-const SolutionDetail: React.FC<SolutionDetailProps> = ({ solution, onBack, language }) => {
+const SolutionDetail: React.FC<SolutionDetailProps> = ({ solution, onBack, onGoHome, language }) => {
   const t = translations[language];
   const [activeTier, setActiveTier] = useState<keyof NonNullable<EnrichedSolution['executionPlan']>>('poc');
   const [deployMode, setDeployMode] = useState<DeploymentMode>('CLOUD');
@@ -102,9 +103,14 @@ const SolutionDetail: React.FC<SolutionDetailProps> = ({ solution, onBack, langu
 
       {/* Navigation */}
       <div className="py-6 flex items-center justify-between">
-        <button onClick={onBack} className="text-slate-400 hover:text-white flex items-center gap-2 text-sm transition-colors">
-          ← {t.detail.back}
-        </button>
+        <div className="flex items-center gap-4">
+          <button onClick={onBack} className="text-slate-400 hover:text-white flex items-center gap-2 text-sm transition-colors border border-slate-700 px-3 py-1.5 rounded-lg hover:bg-slate-800">
+            ← {t.detail.back}
+          </button>
+          <button onClick={onGoHome} className="text-slate-400 hover:text-blue-400 flex items-center gap-2 text-sm transition-colors border border-slate-700 px-3 py-1.5 rounded-lg hover:bg-slate-800">
+            <Home size={14} /> {t.home?.title || 'Home'}
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-12">
@@ -117,7 +123,7 @@ const SolutionDetail: React.FC<SolutionDetailProps> = ({ solution, onBack, langu
 
           {/* Markdown Content Renderer */}
           <div className="prose prose-invert max-w-none mb-12">
-            {solution.fullOverview.split('\n').map((line, i) => {
+            {(solution.fullOverview || solution.description || '').split('\n').map((line, i) => {
               if (line.startsWith('# ')) return <h1 key={i} className="text-3xl font-black text-white mt-8 mb-4">{line.replace('# ', '')}</h1>;
               if (line.startsWith('## ')) return <h2 key={i} className="text-2xl font-bold text-white mt-6 mb-3 flex items-center gap-2"><div className="w-1 h-6 bg-blue-500 rounded-full"></div>{line.replace('## ', '')}</h2>;
               if (line.startsWith('### ')) return <h3 key={i} className="text-xl font-bold text-blue-400 mt-4 mb-2">{line.replace('### ', '')}</h3>;

@@ -13,8 +13,8 @@ interface AdminLoginProps {
 
 export default function AdminLogin({ language, onLogin, onBack }: AdminLoginProps) {
   const t = translations[language];
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('architect_prime');
+  const [password, setPassword] = useState('hashed_secret_123');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false); // Add loading state
 
@@ -77,7 +77,7 @@ export default function AdminLogin({ language, onLogin, onBack }: AdminLoginProp
                   value={username}
                   onChange={(e) => {
                     setUsername(e.target.value);
-                    if(error) setError('');
+                    if (error) setError('');
                   }}
                   className="w-full bg-slate-900 border border-slate-700 rounded-lg py-3 pl-10 pr-4 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
                   placeholder="admin"
@@ -97,7 +97,7 @@ export default function AdminLogin({ language, onLogin, onBack }: AdminLoginProp
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);
-                    if(error) setError('');
+                    if (error) setError('');
                   }}
                   className="w-full bg-slate-900 border border-slate-700 rounded-lg py-3 pl-10 pr-4 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
                   placeholder="••••••"
@@ -108,22 +108,22 @@ export default function AdminLogin({ language, onLogin, onBack }: AdminLoginProp
 
             {/* Quick Login Buttons */}
             <div className="flex gap-2 justify-center py-2">
-               <button 
-                 type="button" 
-                 onClick={() => fillCredentials('admin', 'admin')}
-                 className="flex items-center gap-1 text-xs bg-slate-700 hover:bg-slate-600 text-blue-300 px-3 py-1.5 rounded transition-colors"
-                 disabled={loading}
-               >
-                 <Zap size={10} /> {t.admin.demoAdmin}
-               </button>
-               <button 
-                 type="button" 
-                 onClick={() => fillCredentials('architect', '123')}
-                 className="flex items-center gap-1 text-xs bg-slate-700 hover:bg-slate-600 text-purple-300 px-3 py-1.5 rounded transition-colors"
-                 disabled={loading}
-               >
-                 <Zap size={10} /> {t.admin.demoArchitect}
-               </button>
+              <button
+                type="button"
+                onClick={() => fillCredentials('super_admin', 'admin_secret_888')}
+                className="flex items-center gap-1 text-xs bg-slate-700 hover:bg-slate-600 text-blue-300 px-3 py-1.5 rounded transition-colors"
+                disabled={loading}
+              >
+                <Zap size={10} /> {t.admin.demoAdmin}
+              </button>
+              <button
+                type="button"
+                onClick={() => fillCredentials('architect_prime', 'hashed_secret_123')}
+                className="flex items-center gap-1 text-xs bg-slate-700 hover:bg-slate-600 text-purple-300 px-3 py-1.5 rounded transition-colors"
+                disabled={loading}
+              >
+                <Zap size={10} /> {t.admin.demoArchitect}
+              </button>
             </div>
 
             {error && (
@@ -141,7 +141,7 @@ export default function AdminLogin({ language, onLogin, onBack }: AdminLoginProp
             </button>
           </form>
 
-          <button 
+          <button
             onClick={onBack}
             className="w-full text-center mt-6 text-sm text-slate-500 hover:text-slate-300 transition-colors"
           >

@@ -23,7 +23,6 @@ model User {
   updatedAt     DateTime  @updatedAt
 
   auditLogs     AuditLog[]
-  orders        ProcurementOrder[]
 }
 
 // System Audit Logs
@@ -100,79 +99,4 @@ model DigitalAgent {
   updatedAt       DateTime @updatedAt
 
   solution        Solution @relation(fields: [solutionId], references: [id])
-}
-
-// --- Cloud Resource Management & IaC ---
-
-model CloudProvider {
-  id          String   @id @default(uuid())
-  name        String
-  type        String   // AWS, ALIYUN, GCP, AZURE, VMWARE, OPENSTACK, LOCAL
-  credentials String   // JSON string: { accessKey, secretKey, region, endpoint } - Encrypt in app
-  status      String   // ACTIVE, ERROR, SYNCING
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  resources   CloudResource[]
-  stacks      InfrastructureStack[]
-}
-
-model CloudResource {
-  id          String   @id @default(uuid())
-  providerId  String
-  name        String
-  type        String   // COMPUTE, STORAGE, NETWORK, DATABASE
-  region      String
-  status      String   // RUNNING, STOPPED, PROVISIONING, TERMINATED
-  ipAddress   String?
-  specs       String   // JSON: { cpu, ram, disk, os }
-  terraformId String?  // ID in terraform state
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  provider    CloudProvider @relation(fields: [providerId], references: [id])
-}
-
-model InfrastructureStack {
-  id          String   @id @default(uuid())
-  name        String
-  providerId  String
-  tfState     String?  // Terraform State JSON
-  tfConfig    String   // Terraform HCL Configuration
-  status      String   // APPLIED, PLAN_FAILED, APPLY_FAILED, DRIFTED
-  lastApply   DateTime?
-  
-  provider    CloudProvider @relation(fields: [providerId], references: [id])
-}
-
-// --- Procurement & Finance ---
-
-model ProcurementOrder {
-  id            String   @id @default(uuid())
-  orderNumber   String   @unique
-  requesterId   String
-  resourceType  String
-  specs         String   // JSON requirements
-  budget        Float
-  currency      String
-  status        String   // PENDING, MATCHING, FULFILLED, CANCELLED
-  matchedResourceId String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
-  requester     User     @relation(fields: [requesterId], references: [id])
-  billing       BillingLedger[]
-}
-
-model BillingLedger {
-  id            String   @id @default(uuid())
-  orderId       String
-  amount        Float
-  currency      String
-  type          String   // PAYMENT, REFUND, ADJUSTMENT
-  status        String   // PROCESSED, PENDING, FAILED
-  transactionId String?
-  createdAt     DateTime @default(now())
-
-  order         ProcurementOrder @relation(fields: [orderId], references: [id])
 }

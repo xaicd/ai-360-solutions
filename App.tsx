@@ -79,7 +79,7 @@ function App() {
         );
 
       case ViewState.DETAIL:
-        return selectedSolution ? <SolutionDetail solution={selectedSolution} onBack={() => setView(ViewState.RESULTS)} language={language} /> : null;
+        return selectedSolution ? <SolutionDetail solution={selectedSolution} onBack={() => setView(ViewState.RESULTS)} onGoHome={handleGoHome} language={language} /> : null;
 
       case ViewState.RESULTS:
         return (

@@ -63,7 +63,52 @@ export enum AdminView {
   USERS = 'USERS',
   AUDIT_LOGS = 'AUDIT_LOGS',
   SYSTEM = 'SYSTEM',
-  AI_ENGINE = 'AI_ENGINE'
+  AI_ENGINE = 'AI_ENGINE',
+  CLOUD_RESOURCES = 'CLOUD_RESOURCES', // New
+  FINANCE = 'FINANCE' // New
+}
+
+export interface CloudProvider {
+  id: string;
+  name: string;
+  type: 'AWS' | 'ALIYUN' | 'GCP' | 'AZURE' | 'VMWARE' | 'OPENSTACK' | 'LOCAL';
+  credentials?: string; // Should be masked in API responses
+  status: 'ACTIVE' | 'ERROR' | 'SYNCING';
+  createdAt: string;
+}
+
+export interface CloudResource {
+  id: string;
+  providerId: string;
+  name: string;
+  type: 'COMPUTE' | 'STORAGE' | 'NETWORK' | 'DATABASE';
+  region: string;
+  status: 'RUNNING' | 'STOPPED' | 'PROVISIONING' | 'TERMINATED';
+  ipAddress?: string;
+  specs: any; // JSON object
+  terraformId?: string;
+  providerName?: string; // Enriched
+}
+
+export interface InfrastructureStack {
+  id: string;
+  name: string;
+  providerId: string;
+  status: 'APPLIED' | 'PLAN_FAILED' | 'APPLY_FAILED' | 'DRIFTED';
+  lastApply?: string;
+}
+
+export interface ProcurementOrder {
+  id: string;
+  orderNumber: string;
+  requesterId: string;
+  resourceType: string;
+  specs: any;
+  budget: number;
+  currency: string;
+  status: 'PENDING' | 'MATCHING' | 'FULFILLED' | 'CANCELLED';
+  createdAt: string;
+  requesterName?: string; // Enriched
 }
 
 export type AgentStatus = 'HIBERNATING' | 'AWAKE' | 'WORKING' | 'TRAINING';

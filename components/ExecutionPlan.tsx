@@ -2,9 +2,9 @@
 import React from 'react';
 import { ExecutionPlan as IExecutionPlan, Language } from '../types';
 import { translations } from '../translations';
-import { 
-  Users, ListTodo, Cpu, Clock, 
-  Zap, Building, Cloud 
+import {
+  Users, ListTodo, Cpu, Clock,
+  Zap, Building, Cloud
 } from 'lucide-react';
 
 interface ExecutionPlanProps {
@@ -15,7 +15,15 @@ interface ExecutionPlanProps {
 
 const ExecutionPlan: React.FC<ExecutionPlanProps> = ({ plan, language, selectedTier }) => {
   const t = translations[language];
-  const currentTier = plan[selectedTier];
+  const currentTier = plan?.[selectedTier];
+
+  if (!currentTier) {
+    return (
+      <div className="bg-slate-800 rounded-3xl border border-slate-700 p-8 text-center text-slate-500">
+        Execution Plan not available for this tier.
+      </div>
+    );
+  }
 
   return (
     <div className="bg-slate-800 rounded-3xl border border-slate-700 overflow-hidden shadow-xl">
@@ -25,7 +33,7 @@ const ExecutionPlan: React.FC<ExecutionPlanProps> = ({ plan, language, selectedT
         </h3>
         <div className="flex gap-2">
           {['poc', 'production', 'saas'].map((id) => (
-            <div 
+            <div
               key={id}
               className={`w-3 h-3 rounded-full ${selectedTier === id ? 'bg-blue-500 scale-125' : 'bg-slate-700'} transition-all`}
             ></div>
@@ -35,7 +43,7 @@ const ExecutionPlan: React.FC<ExecutionPlanProps> = ({ plan, language, selectedT
 
       <div className="p-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          
+
           {/* Detailed Specs */}
           <div className="space-y-8">
             <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800">
@@ -70,30 +78,30 @@ const ExecutionPlan: React.FC<ExecutionPlanProps> = ({ plan, language, selectedT
                 ))}
               </div>
               <div className="flex items-center gap-2 text-sm text-slate-400 border-t border-slate-800 pt-4">
-                 <Clock size={16} />
-                 {t.execution.hours}: <span className="text-white font-bold">{currentTier.human.estimatedHours}h</span>
+                <Clock size={16} />
+                {t.execution.hours}: <span className="text-white font-bold">{currentTier.human.estimatedHours}h</span>
               </div>
             </div>
           </div>
 
           {/* Roadmap */}
           <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800">
-             <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-8 flex items-center gap-2">
-                <ListTodo size={14} className="text-emerald-400" /> {t.execution.steps}
-             </h4>
-             <div className="space-y-6">
-               {currentTier.steps.map((step, i) => (
-                 <div key={i} className="flex gap-4 group">
-                    <div className="flex flex-col items-center">
-                      <div className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-xs font-bold text-slate-400 group-hover:bg-blue-600 group-hover:text-white transition-all">
-                        {i + 1}
-                      </div>
-                      {i < currentTier.steps.length - 1 && <div className="w-px h-full bg-slate-700 my-2"></div>}
+            <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-8 flex items-center gap-2">
+              <ListTodo size={14} className="text-emerald-400" /> {t.execution.steps}
+            </h4>
+            <div className="space-y-6">
+              {currentTier.steps.map((step, i) => (
+                <div key={i} className="flex gap-4 group">
+                  <div className="flex flex-col items-center">
+                    <div className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-xs font-bold text-slate-400 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                      {i + 1}
                     </div>
-                    <p className="text-sm text-slate-300 pt-1.5 group-hover:text-white transition-colors leading-relaxed">{step}</p>
-                 </div>
-               ))}
-             </div>
+                    {i < currentTier.steps.length - 1 && <div className="w-px h-full bg-slate-700 my-2"></div>}
+                  </div>
+                  <p className="text-sm text-slate-300 pt-1.5 group-hover:text-white transition-colors leading-relaxed">{step}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

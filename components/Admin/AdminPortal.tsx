@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { AdminUser, Language, AdminView, UserRole, AiModel, ModelConfig } from '../../types';
 import { translations } from '../../translations';
-import { LayoutDashboard, Database, Users, Settings, Activity, LogOut, Menu, X, Cpu, Brain } from 'lucide-react';
+import { LayoutDashboard, Database, Users, Settings, Activity, LogOut, Menu, X, Cpu, Brain, Cloud, CreditCard } from 'lucide-react';
 import AdminDashboard from './AdminDashboard';
 import SolutionManager from './SolutionManager';
 import UserManager from './UserManager';
@@ -10,6 +10,8 @@ import AuditLogViewer from './AuditLogViewer';
 import SystemConfig from './SystemConfig';
 import ModelSettings from '../ModelSettings';
 import AgentWorkshop from './AgentWorkshop';
+import CloudManager from './CloudManager';
+import FinanceManager from './FinanceManager';
 
 interface AdminPortalProps {
   user: AdminUser;
@@ -21,9 +23,9 @@ interface AdminPortalProps {
   onUpdateConfig: (m: AiModel, c: ModelConfig) => void;
 }
 
-const AdminPortal: React.FC<AdminPortalProps> = ({ 
-  user, language, onLogout, 
-  aiModel, setAiModel, modelConfigs, onUpdateConfig 
+const AdminPortal: React.FC<AdminPortalProps> = ({
+  user, language, onLogout,
+  aiModel, setAiModel, modelConfigs, onUpdateConfig
 }) => {
   const t = translations[language];
   const [currentView, setCurrentView] = useState<AdminView>(AdminView.DASHBOARD);
@@ -31,16 +33,17 @@ const AdminPortal: React.FC<AdminPortalProps> = ({
 
   const canAccessSolutions = [UserRole.SUPER_ADMIN, UserRole.SOLUTION_ARCHITECT].includes(user.role);
   const canAccessSystem = [UserRole.SUPER_ADMIN, UserRole.SYSTEM_OP].includes(user.role);
+  const canAccessCloud = [UserRole.SUPER_ADMIN, UserRole.SYSTEM_OP, UserRole.SOLUTION_ARCHITECT].includes(user.role);
 
   const NavItem = ({ view, icon: Icon, label, disabled = false }: { view: AdminView, icon: any, label: string, disabled?: boolean }) => (
     <button
       onClick={() => !disabled && setCurrentView(view)}
       className={`
         w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all mb-1
-        ${currentView === view 
-          ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/30' 
-          : disabled 
-            ? 'text-slate-600 cursor-not-allowed' 
+        ${currentView === view
+          ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/30'
+          : disabled
+            ? 'text-slate-600 cursor-not-allowed'
             : 'text-slate-400 hover:bg-slate-800 hover:text-white'
         }
       `}
@@ -72,6 +75,12 @@ const AdminPortal: React.FC<AdminPortalProps> = ({
           <NavItem view={AdminView.DASHBOARD} icon={LayoutDashboard} label={t.admin.dashboard} />
           <NavItem view={AdminView.SOLUTIONS} icon={Database} label={t.admin.solutions} disabled={!canAccessSolutions} />
           <NavItem view={AdminView.AGENTS_WORKSHOP} icon={Brain} label="Agent Workshop" disabled={!canAccessSolutions} />
+
+          <div className="my-2 border-t border-slate-800 mx-2"></div>
+          <NavItem view={AdminView.CLOUD_RESOURCES} icon={Cloud} label="Cloud Resources" disabled={!canAccessCloud} />
+          <NavItem view={AdminView.FINANCE} icon={CreditCard} label="Finance" disabled={!canAccessCloud} />
+
+          <div className="my-2 border-t border-slate-800 mx-2"></div>
           <NavItem view={AdminView.AI_ENGINE} icon={Cpu} label={t.admin.engine} disabled={!canAccessSystem} />
           <NavItem view={AdminView.USERS} icon={Users} label={t.admin.users} disabled={!canAccessSystem} />
           <NavItem view={AdminView.AUDIT_LOGS} icon={Activity} label={t.admin.logs} />
@@ -90,11 +99,13 @@ const AdminPortal: React.FC<AdminPortalProps> = ({
         {currentView === AdminView.DASHBOARD && <AdminDashboard language={language} />}
         {currentView === AdminView.SOLUTIONS && <SolutionManager language={language} />}
         {currentView === AdminView.AGENTS_WORKSHOP && <AgentWorkshop language={language} />}
+        {currentView === AdminView.CLOUD_RESOURCES && <CloudManager language={language} />}
+        {currentView === AdminView.FINANCE && <FinanceManager language={language} />}
         {currentView === AdminView.USERS && <UserManager language={language} />}
         {currentView === AdminView.AUDIT_LOGS && <AuditLogViewer language={language} />}
         {currentView === AdminView.SYSTEM && <SystemConfig language={language} />}
         {currentView === AdminView.AI_ENGINE && (
-          <ModelSettings 
+          <ModelSettings
             currentModel={aiModel}
             onSelectModel={setAiModel}
             configs={modelConfigs}
