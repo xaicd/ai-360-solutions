@@ -17,6 +17,7 @@ interface AgentWorkshopProps {
 const AgentWorkshop: React.FC<AgentWorkshopProps> = ({ language, initialSolutionId }) => {
   const t = translations[language];
   const [agents, setAgents] = useState<DigitalAgent[]>([]);
+  const [allAgents, setAllAgents] = useState<DigitalAgent[]>([]);
   const [solutions, setSolutions] = useState<Solution[]>([]);
   const [selectedAgent, setSelectedAgent] = useState<DigitalAgent | null>(null);
   const [selectedSolutionId, setSelectedSolutionId] = useState<string>(initialSolutionId || '');
@@ -24,34 +25,29 @@ const AgentWorkshop: React.FC<AgentWorkshopProps> = ({ language, initialSolution
   const [isAssembling, setIsAssembling] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
 
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [newAgentForm, setNewAgentForm] = useState({ name: '', role: '', personality: '' });
+
   useEffect(() => {
-    // Initial agents
-    setAgents([
-      {
-        id: 'a1', name: 'Zoe-92', role: 'Tech Lead', avatarSeed: 'agent1',
-        status: 'HIBERNATING', saturation: 72, personality: 'Precise & Logical',
-        trainingHistory: [], boundSolutionId: '1'
-      }
-    ]);
-    api.solutions.list().then(res => res.data && setSolutions(res.data));
+    // Load all data
+    const loadData = async () => {
+      const [resAgents, resSolutions] = await Promise.all([
+        api.agents.list(),
+        api.solutions.list()
+      ]);
+      if (resAgents.data) setAllAgents(resAgents.data);
+      if (resSolutions.data) setSolutions(resSolutions.data);
+    };
+    loadData();
   }, []);
 
   useEffect(() => {
-    if (selectedSolutionId && solutions.length > 0) {
-      const sol = solutions.find(s => s.id === selectedSolutionId);
-      if (sol) {
-        // Use seeded data if available
-        const team = (sol as any).digitalTeam || [];
-        if (team.length > 0) {
-          setAgents(team);
-          setSelectedAgent(team[0]);
-        } else {
-          setAgents([]);
-          setSelectedAgent(null);
-        }
-      }
+    if (selectedSolutionId) {
+      setAgents(allAgents.filter(a => a.solutionId === selectedSolutionId));
+    } else {
+      setAgents(allAgents);
     }
-  }, [selectedSolutionId, solutions]);
+  }, [selectedSolutionId, allAgents]);
 
   useEffect(() => {
     if (initialSolutionId) {
@@ -94,10 +90,34 @@ const AgentWorkshop: React.FC<AgentWorkshopProps> = ({ language, initialSolution
       if (p >= 100) {
         clearInterval(interval);
         setIsTraining(false);
-        setAgents(prev => prev.map(a => a.id === selectedAgent.id ? { ...a, saturation: Math.min(100, a.saturation + 12) } : a));
+        const newSaturation = Math.min(100, (selectedAgent.saturation || 0) + 12);
+
+        // Optimistic update
+        setAllAgents(prev => prev.map(a => a.id === selectedAgent.id ? { ...a, saturation: newSaturation } : a));
+        if (selectedAgent) setSelectedAgent({ ...selectedAgent, saturation: newSaturation });
+
+        // API Call
+        api.agents.update(selectedAgent.id, { saturation: newSaturation });
+
         setLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] ${t.admin.workshop.logs.complete}`]);
       }
     }, 150);
+  };
+
+  const handleCreateAgent = async () => {
+    if (!newAgentForm.name || !newAgentForm.role) return;
+    const res = await api.agents.create({
+      ...newAgentForm,
+      // If a solution is selected, bind to it. Else bind to talent pool.
+      solutionId: selectedSolutionId || 'SOL-TALENT-POOL',
+      avatarSeed: `agent-${Math.floor(Math.random() * 1000)}`
+    });
+
+    if (res.success && res.data) {
+      setAllAgents(prev => [...prev, res.data!]);
+      setShowCreateModal(false);
+      setNewAgentForm({ name: '', role: '', personality: '' });
+    }
   };
 
   return (
@@ -158,7 +178,10 @@ const AgentWorkshop: React.FC<AgentWorkshopProps> = ({ language, initialSolution
               </div>
             </button>
           ))}
-          <button className="w-full py-4 rounded-2xl border-2 border-dashed border-slate-700 text-slate-500 hover:border-blue-500 hover:text-blue-400 flex items-center justify-center gap-2 transition-all text-xs font-bold">
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="w-full py-4 rounded-2xl border-2 border-dashed border-slate-700 text-slate-500 hover:border-blue-500 hover:text-blue-400 flex items-center justify-center gap-2 transition-all text-xs font-bold"
+          >
             <Plus size={16} /> {t.admin.workshop.newAgent}
           </button>
         </div>
@@ -258,7 +281,54 @@ const AgentWorkshop: React.FC<AgentWorkshopProps> = ({ language, initialSolution
           )}
         </div>
       </div>
-    </div>
+
+
+      {/* Create Agent Modal */}
+      {
+        showCreateModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+            <div className="bg-slate-900 border border-slate-700 p-8 rounded-3xl w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-200">
+              <h3 className="text-xl font-black text-white mb-6">Recruit New Talent</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-xs uppercase font-black text-slate-500">Name</label>
+                  <input
+                    value={newAgentForm.name}
+                    onChange={e => setNewAgentForm({ ...newAgentForm, name: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white outline-none mt-1 focus:border-blue-500 font-bold"
+                    placeholder="e.g. CyberSentinel"
+                    autoFocus
+                  />
+                </div>
+                <div>
+                  <label className="text-xs uppercase font-black text-slate-500">Role</label>
+                  <input
+                    value={newAgentForm.role}
+                    onChange={e => setNewAgentForm({ ...newAgentForm, role: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white outline-none mt-1 focus:border-blue-500"
+                    placeholder="e.g. Security Analyst"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs uppercase font-black text-slate-500">Personality</label>
+                  <textarea
+                    value={newAgentForm.personality}
+                    onChange={e => setNewAgentForm({ ...newAgentForm, personality: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white outline-none mt-1 focus:border-blue-500"
+                    placeholder="e.g. Vigilant and precise"
+                    rows={2}
+                  />
+                </div>
+              </div>
+              <div className="flex gap-4 mt-8">
+                <button onClick={() => setShowCreateModal(false)} className="flex-1 py-3 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded-xl font-bold transition-colors">Cancel</button>
+                <button onClick={handleCreateAgent} className="flex-1 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-blue-900/20">Recruit</button>
+              </div>
+            </div>
+          </div>
+        )
+      }
+    </div >
   );
 };
 

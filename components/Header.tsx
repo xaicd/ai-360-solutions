@@ -1,17 +1,18 @@
 
 import React from 'react';
 import { Globe, ShieldCheck, Cpu, Settings, Shield } from 'lucide-react';
-import { Language, AiModel } from '../types';
+import { Language, User, AdminUser } from '../types';
 import { translations } from '../translations';
 
 interface HeaderProps {
   onGoHome: () => void;
   onAdmin: () => void;
+  onConsole: () => void;
   language: Language;
   setLanguage: (lang: Language) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onGoHome, onAdmin, language, setLanguage }) => {
+const Header: React.FC<HeaderProps> = ({ onGoHome, onAdmin, onConsole, language, setLanguage }) => {
   const t = translations[language];
 
   return (
@@ -44,6 +45,14 @@ const Header: React.FC<HeaderProps> = ({ onGoHome, onAdmin, language, setLanguag
           </div>
 
           <div className="flex items-center gap-3 border-l border-slate-700 pl-4 ml-1">
+            <button
+              onClick={onConsole}
+              className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-all"
+              title="Console Login"
+            >
+              <Settings size={20} />
+            </button>
+
             <button
               onClick={onAdmin}
               className="p-2 text-slate-400 hover:text-blue-400 hover:bg-slate-800 rounded-xl transition-all"

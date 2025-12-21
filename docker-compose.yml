@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - DATABASE_URL="file:/app/data/dev.db" 
+      # Add other env vars as needed
+    volumes:
+      - ./data:/app/data # Persist DB and uploads

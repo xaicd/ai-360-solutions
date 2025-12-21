@@ -224,7 +224,91 @@ export const translations = {
       verified: "Vetted",
       back: "Back to Home"
     },
-    industries: ["Healthcare", "FinTech", "E-commerce", "Logistics", "Manufacturing", "Legal", "Education", "AgriTech"]
+    industries: ["Healthcare", "FinTech", "E-commerce", "Logistics", "Manufacturing", "Legal", "Education", "AgriTech"],
+    auth: {
+      loginTab: "Log In",
+      registerTab: "Register",
+      welcome: "Welcome Back",
+      join: "Join AI 360 Ecosystem",
+      username: "Username",
+      password: "Password",
+      createAccount: "Create Account",
+      accessConsole: "Access Console",
+      backHome: "Back to Home"
+    },
+    console: {
+      title: "AI 360 Console",
+      searchPlaceholder: "Search resources, docs...",
+      nav: {
+        overview: "Overview",
+        resources: "My Resources",
+        orders: "Orders & Billing",
+        workforce: "Digital Workforce",
+        settings: "Account Settings",
+        logout: "Sign Out"
+      },
+      workforce: {
+        title: "Digital Workforce",
+        connectMcp: "Connect to IDE (MCP)",
+        mcpEndpoint: "MCP Endpoint",
+        mcpDescription: "Integrate these AI employees into Cursor or Claude Desktop via Model Context Protocol.",
+        activeAgents: "Active Agents",
+        empty: "No digital employees connected.",
+        tools: "Capabilities (Tools)",
+        copyConfig: "Copy Config JSON",
+        status: {
+          ready: "Ready",
+          thinking: "Thinking...",
+          serving: "Serving Request"
+        }
+      },
+      overview: {
+        spending: "Total Spending",
+        instances: "Active Instances",
+        security: "Security Score",
+        tickets: "Open Tickets",
+        usage: "Resource Usage"
+      },
+      resources: {
+        title: "My Resources",
+        empty: "No active resources found.",
+        columns: {
+          name: "Name",
+          id: "Instance ID",
+          region: "Region",
+          type: "Type",
+          status: "Status",
+          ip: "IP Address",
+          actions: "Actions"
+        },
+        actions: {
+          manage: "Manage",
+          console: "VNC"
+        }
+      },
+      orders: {
+        title: "Orders & Billing",
+        empty: "No orders found.",
+        columns: {
+          id: "Order ID",
+          resource: "Product",
+          date: "Date",
+          amount: "Amount",
+          status: "Status"
+        }
+      },
+      settings: {
+        title: "Account Settings",
+        email: "Email",
+        phone: "Mobile",
+        linked: "Linked",
+        notLinked: "Not Linked",
+        verify: "Verify",
+        confirm: "Confirm",
+        sent: "Code sent!",
+        success: "Bound successfully."
+      }
+    }
   },
   zh: {
     title: "AI 360 方案中心",
@@ -450,6 +534,90 @@ export const translations = {
       verified: "已验收",
       back: "返回首页"
     },
-    industries: ["医疗健康", "金融科技", "电商零售", "物流仓储", "工业制造", "法律合规", "教育培训", "农业科技"]
+    industries: ["医疗健康", "金融科技", "电商零售", "物流仓储", "工业制造", "法律合规", "教育培训", "农业科技"],
+    auth: {
+      loginTab: "登录",
+      registerTab: "注册",
+      welcome: "欢迎回来",
+      join: "加入 AI 360 生态",
+      username: "用户名",
+      password: "密码",
+      createAccount: "创建账户",
+      accessConsole: "进入控制台",
+      backHome: "返回首页"
+    },
+    console: {
+      title: "AI 360 控制台",
+      searchPlaceholder: "搜索云资源、文档...",
+      nav: {
+        overview: "总览",
+        resources: "我的资源",
+        orders: "费用账单",
+        workforce: "数字员工",
+        settings: "账户设置",
+        logout: "退出登录"
+      },
+      workforce: {
+        title: "数字员工团队",
+        connectMcp: "连接 IDE (MCP协议)",
+        mcpEndpoint: "MCP 服务端点",
+        mcpDescription: "通过 Model Context Protocol 将这些 AI 员工集成到 Cursor 或 Claude Desktop 中。",
+        activeAgents: "活跃员工",
+        empty: "暂无数字员工接入。",
+        tools: "开放能力 (Tools)",
+        copyConfig: "复制配置 JSON",
+        status: {
+          ready: "就绪",
+          thinking: "思考中...",
+          serving: "服务中"
+        }
+      },
+      overview: {
+        spending: "本月消费",
+        instances: "活跃实例",
+        security: "安全评分",
+        tickets: "工单",
+        usage: "资源监控"
+      },
+      resources: {
+        title: "我的资源",
+        empty: "暂无活跃资源。",
+        columns: {
+          name: "实例名称",
+          id: "实例 ID",
+          region: "地域",
+          type: "规格",
+          status: "状态",
+          ip: "IP 地址",
+          actions: "操作"
+        },
+        actions: {
+          manage: "管理",
+          console: "远程连接"
+        }
+      },
+      orders: {
+        title: "费用账单",
+        empty: "暂无订单记录。",
+        columns: {
+          id: "订单号",
+          resource: "产品",
+          date: "时间",
+          amount: "金额",
+          status: "状态"
+        }
+      },
+      settings: {
+        title: "账户设置",
+        email: "邮箱",
+        phone: "手机号",
+        linked: "已绑定",
+        notLinked: "未绑定",
+        verify: "验证",
+        confirm: "确认",
+        sent: "验证码已发送!",
+        success: "绑定成功。"
+      }
+    }
   }
 };

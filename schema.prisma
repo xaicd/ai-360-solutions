@@ -16,6 +16,8 @@ model User {
   username      String    @unique
   role          String    // SUPER_ADMIN, SOLUTION_ARCHITECT, SYSTEM_OP, AUDITOR, CONSUMER
   passwordHash  String
+  email         String?   @unique
+  phone         String?   @unique
   avatar        String?
   lastLogin     DateTime?
   isActive      Boolean   @default(true)
@@ -24,6 +26,8 @@ model User {
 
   auditLogs     AuditLog[]
   orders        ProcurementOrder[]
+  resources     CloudResource[]
+  agents        DigitalAgent[]
 }
 
 // System Audit Logs
@@ -96,10 +100,16 @@ model DigitalAgent {
   
   trainingHistory String?  // JSON string of TrainingData[]
 
+  // User Ownership & MCP
+  ownerId         String?
+  mcpEndpoint     String?
+  mcpConfig       String?   // JSON string: { endpoint, tools: [] }
+
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
   solution        Solution @relation(fields: [solutionId], references: [id])
+  owner           User?    @relation(fields: [ownerId], references: [id])
 }
 
 // --- Cloud Resource Management & IaC ---
@@ -120,6 +130,7 @@ model CloudProvider {
 model CloudResource {
   id          String   @id @default(uuid())
   providerId  String
+  ownerId     String?  // Linked to User (Consumer)
   name        String
   type        String   // COMPUTE, STORAGE, NETWORK, DATABASE
   region      String
@@ -131,6 +142,7 @@ model CloudResource {
   updatedAt   DateTime @updatedAt
 
   provider    CloudProvider @relation(fields: [providerId], references: [id])
+  owner       User?         @relation(fields: [ownerId], references: [id])
 }
 
 model InfrastructureStack {

@@ -20,7 +20,9 @@ export enum ViewState {
   DETAIL = 'DETAIL',
   SETTINGS = 'SETTINGS',
   ADMIN_LOGIN = 'ADMIN_LOGIN',
-  ADMIN_PORTAL = 'ADMIN_PORTAL'
+  ADMIN_PORTAL = 'ADMIN_PORTAL',
+  CONSOLE = 'CONSOLE',
+  CONSUMER_LOGIN = 'CONSUMER_LOGIN'
 }
 
 export enum UserRole {
@@ -39,6 +41,8 @@ export interface User {
   avatar: string;
   lastLogin: string;
   isActive: boolean;
+  email?: string;
+  phone?: string;
 }
 
 export interface AdminUser extends Omit<User, 'passwordHash'> {
@@ -128,6 +132,19 @@ export interface TrainingData {
   timestamp: string;
 }
 
+// MCP Interfaces
+export interface McpTool {
+  name: string;
+  description: string;
+  inputSchema: any;
+}
+
+export interface McpConfig {
+  endpoint: string;
+  tools: McpTool[];
+  status: 'active' | 'inactive';
+}
+
 export interface DigitalAgent {
   id: string;
   role: string;
@@ -140,6 +157,7 @@ export interface DigitalAgent {
   tasks?: AgentTask[];
   trainingHistory: TrainingData[];
   boundSolutionId?: string;
+  mcpConfig?: McpConfig; // Added for MCP-ization
 }
 
 // Added ExecutionTier to define configuration for specific deployment stages

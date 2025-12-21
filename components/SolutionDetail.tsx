@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import { EnrichedSolution, Language, DeploymentMode } from '../types';
+import { EnrichedSolution, Language, DeploymentMode, AdminUser } from '../types';
 import { translations } from '../translations';
+import { api } from '../services/api';
 import DigitalTeam from './DigitalTeam';
 import ExecutionPlan from './ExecutionPlan';
 import PaymentGateway from './PaymentGateway';
@@ -15,10 +16,12 @@ interface SolutionDetailProps {
   solution: EnrichedSolution;
   onBack: () => void;
   onGoHome: () => void;
+  onGoConsole?: () => void;
   language: Language;
+  user?: AdminUser | null;
 }
 
-const SolutionDetail: React.FC<SolutionDetailProps> = ({ solution, onBack, onGoHome, language }) => {
+const SolutionDetail: React.FC<SolutionDetailProps> = ({ solution, onBack, onGoHome, onGoConsole, language, user }) => {
   const t = translations[language];
   const [activeTier, setActiveTier] = useState<keyof NonNullable<EnrichedSolution['executionPlan']>>('poc');
   const [deployMode, setDeployMode] = useState<DeploymentMode>('CLOUD');
@@ -30,15 +33,42 @@ const SolutionDetail: React.FC<SolutionDetailProps> = ({ solution, onBack, onGoH
   const currentPrice = (solution.price || 9999) * (activeTier === 'production' ? 5 : (activeTier === 'saas' ? 2 : 1));
   const usdtPrice = (currentPrice / 7.23).toFixed(0);
 
-  const handleExecute = () => {
+  const handleExecute = async () => {
+    if (!user) {
+      alert("Please log in to your account first to deploy solutions.");
+      return;
+    }
+
     if (deployMode === 'EDGE_PRIVATE') {
       setDeployStatus('tunneling');
       setTimeout(() => setDeployStatus('decrypting'), 2000);
       setTimeout(() => setDeployStatus('installing'), 4000);
-      setTimeout(() => setDeployStatus('success'), 7000);
+      setTimeout(() => setDeployStatus('success'), 7000); // Edge deployment simulation
     } else {
       setDeployStatus('installing');
-      setTimeout(() => setDeployStatus('success'), 3000);
+
+      try {
+        // Trigger Backend Provisioning
+        const res = await api.console.buy({
+          userId: user.id,
+          solutionId: solution.id,
+          tier: activeTier,
+          price: currentPrice,
+          currency: solution.currency
+        });
+
+        if (res.orderId) {
+          setDeployStatus('success');
+          setIsLicensed(true);
+        } else {
+          alert('Deployment failed: ' + (res.error || 'Unknown error'));
+          setDeployStatus('idle');
+        }
+      } catch (e) {
+        console.error(e);
+        alert('Network Error');
+        setDeployStatus('idle');
+      }
     }
   };
 
@@ -94,7 +124,7 @@ const SolutionDetail: React.FC<SolutionDetailProps> = ({ solution, onBack, onGoH
               </div>
 
               {deployStatus === 'success' && (
-                <button onClick={() => setDeployStatus('idle')} className="mt-8 w-full bg-blue-600 py-3 rounded-xl font-bold text-white">Go to Dashboard</button>
+                <button onClick={() => onGoConsole ? onGoConsole() : setDeployStatus('idle')} className="mt-8 w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-bold text-white transition-colors">Go to Console</button>
               )}
             </div>
           </div>

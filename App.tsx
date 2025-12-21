@@ -4,6 +4,8 @@ import Header from './components/Header';
 import SolutionDetail from './components/SolutionDetail';
 import AdminLogin from './components/Admin/AdminLogin';
 import AdminPortal from './components/Admin/AdminPortal';
+import Console from './components/Console/Console';
+import ConsumerLogin from './components/ConsumerLogin';
 import { searchSolutions, enrichSolutionDetails } from './services/geminiService';
 import { Solution, EnrichedSolution, ViewState, Language, AiModel, ModelConfig, AdminUser } from './types';
 import { translations } from './translations';
@@ -30,6 +32,7 @@ function App() {
   const [isSearching, setIsSearching] = useState(false);
   const [isEnriching, setIsEnriching] = useState(false);
   const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
+  const [consumerUser, setConsumerUser] = useState<AdminUser | null>(null);
 
   const t = translations[language];
 
@@ -78,8 +81,24 @@ function App() {
           />
         );
 
+      case ViewState.CONSUMER_LOGIN:
+        return <ConsumerLogin language={language} onLogin={(u) => { setConsumerUser(u); setView(ViewState.CONSOLE); }} onBack={handleGoHome} />;
+
+      case ViewState.CONSOLE:
+        if (!consumerUser) return <ConsumerLogin language={language} onLogin={(u) => { setConsumerUser(u); setView(ViewState.CONSOLE); }} onBack={handleGoHome} />;
+        return <Console user={consumerUser} language={language} onLogout={() => { setConsumerUser(null); setView(ViewState.HOME); }} />;
+
       case ViewState.DETAIL:
-        return selectedSolution ? <SolutionDetail solution={selectedSolution} onBack={() => setView(ViewState.RESULTS)} onGoHome={handleGoHome} language={language} /> : null;
+        return selectedSolution ? (
+          <SolutionDetail
+            solution={selectedSolution}
+            user={consumerUser}
+            onBack={() => setView(ViewState.RESULTS)}
+            onGoHome={handleGoHome}
+            onGoConsole={() => setView(ViewState.CONSOLE)}
+            language={language}
+          />
+        ) : null;
 
       case ViewState.RESULTS:
         return (
@@ -141,7 +160,15 @@ function App() {
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-200 font-sans selection:bg-blue-500/30">
-      {view !== ViewState.ADMIN_PORTAL && <Header onGoHome={handleGoHome} onAdmin={() => setView(ViewState.ADMIN_LOGIN)} language={language} setLanguage={setLanguage} />}
+      {view !== ViewState.ADMIN_PORTAL && view !== ViewState.CONSOLE && (
+        <Header
+          onGoHome={handleGoHome}
+          onAdmin={() => setView(ViewState.ADMIN_LOGIN)}
+          onConsole={() => setView(ViewState.CONSUMER_LOGIN)}
+          language={language}
+          setLanguage={setLanguage}
+        />
+      )}
       <main>
         {isEnriching && (
           <div className="fixed inset-0 z-[200] bg-slate-900/90 backdrop-blur-sm flex flex-col items-center justify-center">
