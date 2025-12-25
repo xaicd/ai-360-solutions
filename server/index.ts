@@ -1,3 +1,4 @@
+import 'dotenv/config'; // Load env vars
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -15,6 +16,7 @@ import { solutionRoutes } from './routes/solution.routes';
 import { mcpRoutes } from './routes/mcp.routes';
 import { adminRoutes } from './routes/admin.routes';
 import { cloudRoutes } from './routes/cloud.routes';
+import { trainingRoutes } from './routes/training.routes';
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -50,6 +52,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/console', consoleRoutes);
 app.use('/api/mcp', mcpRoutes);
 app.use('/api/cloud', cloudRoutes); // Multi-Cloud Terraform
+app.use('/api/training', trainingRoutes);
 app.use('/api', solutionRoutes); // /solutions, /agents (Public/Store)
 app.use('/api', adminRoutes);    // /stats, /users, /cloud, /finance
 

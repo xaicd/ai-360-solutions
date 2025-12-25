@@ -23,6 +23,7 @@
     "prisma": "^5.10.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "recharts": "^3.6.0",
     "zod": "^4.2.1"
   },
   "devDependencies": {

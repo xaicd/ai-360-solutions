@@ -1,4 +1,4 @@
-
+import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
 
 // Global instance to prevent multiple connections in dev hot-reload

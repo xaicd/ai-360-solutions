@@ -109,7 +109,53 @@ model DigitalAgent {
   updatedAt       DateTime @updatedAt
 
   solution        Solution @relation(fields: [solutionId], references: [id])
-  owner           User?    @relation(fields: [ownerId], references: [id])
+  trainingJobs    TrainingJob[]
+  knowledgeBases  KnowledgeBase[] // Implicit many-to-many
+}
+
+model KnowledgeBase {
+  id              String   @id @default(uuid())
+  name            String
+  description     String?
+  embeddingModel  String   @default("text-embedding-3-small")
+  vectorDb        String   @default("pgvector")
+  status          String   @default("READY")
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  documents       Document[]
+  agents          DigitalAgent[]
+}
+
+model Document {
+  id              String   @id @default(uuid())
+  knowledgeBaseId String
+  title           String
+  content         String?  // Text content or extracted text
+  filePath        String?  // S3 path or local path
+  fileType        String   // pdf, md, txt
+  fileSize        Int
+  status          String   // PENDING, PROCESSING, EMBEDDED, FAILED
+  chunkCount      Int      @default(0)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  knowledgeBase   KnowledgeBase @relation(fields: [knowledgeBaseId], references: [id])
+}
+
+model TrainingJob {
+  id          String   @id @default(uuid())
+  agentId     String
+  status      String   // QUEUED, RUNNING, COMPLETED, FAILED
+  config      String   // JSON: { baseModel, dataset, epochs, learningRate, loraRank }
+  metrics     String?  // JSON: { loss: [{step:1, val:0.9}], eval: ... }
+  logs        String?  // Console output
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  agent       DigitalAgent @relation(fields: [agentId], references: [id])
 }
 
 // --- Cloud Resource Management & IaC ---

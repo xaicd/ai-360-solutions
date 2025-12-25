@@ -2,13 +2,67 @@ import React, { useState, useEffect } from 'react';
 import { User, Language, CloudResource, ProcurementOrder, AdminUser, DigitalAgent } from '../../types';
 import { translations } from '../../translations';
 import { api } from '../../services/api';
-import { CloudIaC } from './CloudIaC'; // Import CloudIaC
+import { CloudIaC } from './CloudIaC';
+import { AgentTraining } from './AgentTraining'; // Import Training
 import {
     LayoutDashboard, Server, ShoppingCart, Settings as SettingsIcon,
     LogOut, Bell, Search, CreditCard, Shield, Activity, Box, CheckCircle2, User as UserIcon, Mail, Smartphone,
     MoreHorizontal, Filter, RefreshCw, Plus, ChevronDown, ExternalLink, Globe, Cpu, Hash,
-    Users, Bot, Terminal, Code, Copy, Check, Cloud // Added Cloud icon
+    Users, Bot, Terminal, Code, Copy, Check, Cloud, Brain // Added Brain icon
 } from 'lucide-react';
+
+// ...
+
+export default function Console({ user, onLogout, language }: ConsoleProps) {
+    const t = translations[language];
+    const [activeTab, setActiveTab] = useState<'overview' | 'resources' | 'orders' | 'workforce' | 'settings' | 'cloud' | 'training'>('overview');
+
+    return (
+        <div className="flex h-screen bg-slate-950 text-slate-200 font-sans selection:bg-blue-500/30">
+            {/* Sidebar */}
+            <div className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col z-20 shadow-xl">
+                {/* ... */}
+                <nav className="flex-1 px-3 space-y-1">
+                    <SidebarItem icon={<LayoutDashboard size={18} />} label={t.console.nav.overview} active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} />
+                    <SidebarItem icon={<Server size={18} />} label={t.console.nav.resources} active={activeTab === 'resources'} onClick={() => setActiveTab('resources')} />
+                    <SidebarItem icon={<Cloud size={18} />} label="Cloud IaC" active={activeTab === 'cloud'} onClick={() => setActiveTab('cloud')} />
+                    <div className="my-2 border-t border-slate-800/50"></div>
+                    <SidebarItem icon={<Users size={18} />} label={t.console.nav.workforce} active={activeTab === 'workforce'} onClick={() => setActiveTab('workforce')} />
+                    <SidebarItem icon={<Brain size={18} />} label="Agent Training" active={activeTab === 'training'} onClick={() => setActiveTab('training')} />
+                    <div className="my-2 border-t border-slate-800/50"></div>
+                    <SidebarItem icon={<ShoppingCart size={18} />} label={t.console.nav.orders} active={activeTab === 'orders'} onClick={() => setActiveTab('orders')} />
+                    <SidebarItem icon={<SettingsIcon size={18} />} label={t.console.nav.settings} active={activeTab === 'settings'} onClick={() => setActiveTab('settings')} />
+                </nav>
+                {/* ... */}
+            </div>
+
+            {/* Main Content */}
+            <div className="flex-1 flex flex-col overflow-hidden bg-slate-950">
+                {/* Header... same */}
+                <header className="h-16 bg-slate-900/80 border-b border-slate-800 flex items-center justify-between px-8 backdrop-blur-md z-10 sticky top-0">
+                    <div className="flex items-center gap-2 text-sm text-slate-500 font-medium">
+                        <span className="hover:text-white cursor-pointer transition-colors">Console</span>
+                        <span className="text-slate-700">/</span>
+                        <span className="capitalize text-white font-bold">{activeTab === 'overview' ? t.console.nav.overview : (activeTab === 'cloud' ? 'Cloud IaC' : activeTab === 'training' ? 'Agent Training' : t.console.nav[activeTab])}</span>
+                    </div>
+                    {/* ... */}
+                </header>
+
+                <main className="flex-1 overflow-y-auto p-8 relative">
+                    <div className="max-w-7xl mx-auto">
+                        {activeTab === 'overview' && <Overview user={user} t={t} />}
+                        {activeTab === 'resources' && <Resources user={user} t={t} />}
+                        {activeTab === 'cloud' && <CloudIaC userId={user.id} />}
+                        {activeTab === 'workforce' && <Workforce user={user} t={t} />}
+                        {activeTab === 'training' && <AgentTraining userId={user.id} />}
+                        {activeTab === 'orders' && <Orders user={user} t={t} />}
+                        {activeTab === 'settings' && <Settings user={user} t={t} />}
+                    </div>
+                </main>
+            </div>
+        </div>
+    );
+}
 
 interface ConsoleProps {
     user: AdminUser;
@@ -437,82 +491,3 @@ const Settings = ({ user, t }: { user: AdminUser, t: any }) => {
     );
 };
 
-// --- Main Component ---
-
-export default function Console({ user, onLogout, language }: ConsoleProps) {
-    const t = translations[language];
-    const [activeTab, setActiveTab] = useState<'overview' | 'resources' | 'orders' | 'workforce' | 'settings' | 'cloud'>('overview');
-
-    return (
-        <div className="flex h-screen bg-slate-950 text-slate-200 font-sans selection:bg-blue-500/30">
-            {/* Sidebar */}
-            <div className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col z-20 shadow-xl">
-                <div className="p-6">
-                    <h1 className="text-xl font-black text-white flex items-center gap-2 tracking-tighter">
-                        <span className="text-blue-500">AI 360</span> Console
-                    </h1>
-                </div>
-
-                <nav className="flex-1 px-3 space-y-1">
-                    <SidebarItem icon={<LayoutDashboard size={18} />} label={t.console.nav.overview} active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} />
-                    <SidebarItem icon={<Server size={18} />} label={t.console.nav.resources} active={activeTab === 'resources'} onClick={() => setActiveTab('resources')} />
-                    <SidebarItem icon={<Cloud size={18} />} label="Cloud IaC" active={activeTab === 'cloud'} onClick={() => setActiveTab('cloud')} />
-                    <SidebarItem icon={<Users size={18} />} label={t.console.nav.workforce} active={activeTab === 'workforce'} onClick={() => setActiveTab('workforce')} />
-                    <SidebarItem icon={<ShoppingCart size={18} />} label={t.console.nav.orders} active={activeTab === 'orders'} onClick={() => setActiveTab('orders')} />
-                    <SidebarItem icon={<SettingsIcon size={18} />} label={t.console.nav.settings} active={activeTab === 'settings'} onClick={() => setActiveTab('settings')} />
-                </nav>
-
-                <div className="p-4 border-t border-slate-800/50">
-                    <div className="flex items-center gap-3 mb-4 px-2">
-                        <img src={user.avatar || `https://i.pravatar.cc/150?u=${user.username}`} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700" />
-                        <div className="flex-1 min-w-0">
-                            <div className="text-sm font-bold text-white truncate">{user.username}</div>
-                            <div className="text-[10px] text-slate-500 uppercase font-bold tracking-wide">{user.role}</div>
-                        </div>
-                    </div>
-                    <button onClick={onLogout} className="w-full flex items-center justify-center gap-2 text-xs font-bold text-slate-400 hover:text-white py-2.5 rounded-lg hover:bg-slate-800 transition-colors uppercase tracking-widest border border-transparent hover:border-slate-700">
-                        <LogOut size={14} /> {t.console.nav.logout}
-                    </button>
-                </div>
-            </div>
-
-            {/* Main Content */}
-            <div className="flex-1 flex flex-col overflow-hidden bg-slate-950">
-                {/* Header */}
-                <header className="h-16 bg-slate-900/80 border-b border-slate-800 flex items-center justify-between px-8 backdrop-blur-md z-10 sticky top-0">
-                    <div className="flex items-center gap-2 text-sm text-slate-500 font-medium">
-                        <span className="hover:text-white cursor-pointer transition-colors">Console</span>
-                        <span className="text-slate-700">/</span>
-                        <span className="capitalize text-white font-bold">{activeTab === 'overview' ? t.console.nav.overview : (activeTab === 'cloud' ? 'Cloud IaC' : t.console.nav[activeTab])}</span>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <div className="relative group">
-                            <Search className="absolute left-3 top-2.5 text-slate-500 w-4 h-4 group-focus-within:text-blue-500 transition-colors" />
-                            <input className="bg-slate-950 border border-slate-800 rounded-full pl-9 pr-4 py-2 text-xs text-white focus:border-blue-500 outline-none w-72 transition-all focus:w-80 shadow-inner" placeholder={t.console.searchPlaceholder} />
-                        </div>
-                        <button className="relative p-2.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-full transition-colors">
-                            <Bell size={18} />
-                            <span className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-slate-900"></span>
-                        </button>
-                        <div className="w-px h-6 bg-slate-800"></div>
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-900 rounded-full border border-slate-800">
-                            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">System Normal</span>
-                        </div>
-                    </div>
-                </header>
-
-                <main className="flex-1 overflow-y-auto p-8 relative">
-                    <div className="max-w-7xl mx-auto">
-                        {activeTab === 'overview' && <Overview user={user} t={t} />}
-                        {activeTab === 'resources' && <Resources user={user} t={t} />}
-                        {activeTab === 'cloud' && <CloudIaC userId={user.id} />}
-                        {activeTab === 'workforce' && <Workforce user={user} t={t} />}
-                        {activeTab === 'orders' && <Orders user={user} t={t} />}
-                        {activeTab === 'settings' && <Settings user={user} t={t} />}
-                    </div>
-                </main>
-            </div>
-        </div>
-    );
-}

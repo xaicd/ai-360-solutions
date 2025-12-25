@@ -259,6 +259,30 @@ const remoteApi = {
         return await res.json();
       } catch (e: any) { return { success: false, error: 'Network Error' }; }
     }
+  },
+  training: {
+    list: async (agentId: string): Promise<ApiResponse<any[]>> => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/training/agent/${agentId}`);
+        return await res.json();
+      } catch (e) { return { success: false, error: 'Network Error', timestamp: new Date().toISOString() }; }
+    },
+    get: async (jobId: string): Promise<ApiResponse<any>> => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/training/job/${jobId}`);
+        return await res.json();
+      } catch (e) { return { success: false, error: 'Network Error', timestamp: new Date().toISOString() }; }
+    },
+    create: async (data: any): Promise<ApiResponse<any>> => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/training/job`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        return await res.json();
+      } catch (e) { return { success: false, error: 'Network Error', timestamp: new Date().toISOString() }; }
+    }
   }
 };
 
